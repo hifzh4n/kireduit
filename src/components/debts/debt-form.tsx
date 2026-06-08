@@ -14,7 +14,7 @@ import { Field, FieldError, Input, Label, Select, Textarea } from "@/components/
 
 type Values = {
   personName: string;
-  amount: number;
+  amount: number | "";
   type: Debt["type"];
   status: Debt["status"];
   dueDate?: string;
@@ -28,7 +28,7 @@ export function DebtForm({ debt }: { debt?: Debt }) {
     resolver: zodResolver(debtSchema) as unknown as Resolver<Values>,
     defaultValues: {
       personName: debt?.personName || "",
-      amount: debt?.amount || 0,
+      amount: debt?.amount ?? "",
       type: debt?.type || "i-owe",
       status: debt?.status || "unpaid",
       dueDate: debt?.dueDate || todayInput(),
@@ -38,15 +38,16 @@ export function DebtForm({ debt }: { debt?: Debt }) {
 
   async function submit(values: Values) {
     try {
+      const input = { ...values, amount: Number(values.amount) };
       if (debt) {
-        await updateDebt(debt.id, values);
+        await updateDebt(debt.id, input);
         toast.success("Debt updated");
       } else {
-        await addDebt(values);
+        await addDebt(input);
         toast.success("Debt added");
         form.reset({
           personName: "",
-          amount: 0,
+          amount: "",
           type: "i-owe",
           status: "unpaid",
           dueDate: todayInput(),
@@ -68,12 +69,12 @@ export function DebtForm({ debt }: { debt?: Debt }) {
         <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
           <Field>
             <Label htmlFor="personName">Person name</Label>
-            <Input id="personName" autoComplete="name" {...form.register("personName")} />
+            <Input id="personName" autoComplete="name" placeholder="e.g. Ahmad" {...form.register("personName")} />
             <FieldError message={form.formState.errors.personName?.message} />
           </Field>
           <Field>
             <Label htmlFor="amount">Amount</Label>
-            <Input id="amount" type="number" step="0.01" inputMode="decimal" {...form.register("amount")} />
+            <Input id="amount" type="number" step="0.01" inputMode="decimal" placeholder="0.00" {...form.register("amount")} />
             <FieldError message={form.formState.errors.amount?.message} />
           </Field>
           <Field>

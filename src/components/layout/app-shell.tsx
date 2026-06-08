@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, BarChart3, HandCoins, Home, Plus, ReceiptText, Settings, X } from "lucide-react";
 import { DataProvider } from "@/contexts/data-context";
 import { Protected } from "@/components/auth/auth-gate";
+import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 import { cn } from "@/lib/utils";
 
 const navBeforeAdd = [
@@ -71,27 +72,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </header>
 
           <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={pathname}
-                initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -8, filter: "blur(3px)" }}
-                transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
-              >
-                {showBack ? (
-                  <button
-                    type="button"
-                    onClick={() => router.back()}
-                    className="mb-4 inline-flex h-10 items-center gap-2 rounded-md border border-sky-100 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back
-                  </button>
-                ) : null}
-                {children}
-              </motion.div>
-            </AnimatePresence>
+            <PullToRefresh onRefresh={() => router.refresh()}>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={pathname}
+                  initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -8, filter: "blur(3px)" }}
+                  transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+                >
+                  {showBack ? (
+                    <button
+                      type="button"
+                      onClick={() => router.back()}
+                      className="mb-4 inline-flex h-10 items-center gap-2 rounded-md border border-sky-100 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </button>
+                  ) : null}
+                  {children}
+                </motion.div>
+              </AnimatePresence>
+            </PullToRefresh>
           </main>
 
           <div ref={addMenuRef} className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4">

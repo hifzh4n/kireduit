@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
 
 type Values = {
-  amount: number;
+  amount: number | "";
   category: Expense["category"];
   date: string;
   description?: string;
@@ -25,7 +25,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
   const form = useForm<Values>({
     resolver: zodResolver(expenseSchema) as unknown as Resolver<Values>,
     defaultValues: {
-      amount: expense?.amount || 0,
+      amount: expense?.amount ?? "",
       category: expense?.category || "Food",
       date: expense?.date || todayInput(),
       description: expense?.description || "",
@@ -34,14 +34,15 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
 
   async function submit(values: Values) {
     try {
+      const input = { ...values, amount: Number(values.amount) };
       if (expense) {
-        await updateExpense(expense.id, values);
+        await updateExpense(expense.id, input);
         toast.success("Expense updated");
       } else {
-        await addExpense(values);
+        await addExpense(input);
         toast.success("Expense added");
         form.reset({
-          amount: 0,
+          amount: "",
           category: "Food",
           date: todayInput(),
           description: "",
@@ -62,7 +63,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
         <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
           <Field>
             <Label htmlFor="amount">Amount</Label>
-            <Input id="amount" type="number" step="0.01" inputMode="decimal" {...form.register("amount")} />
+            <Input id="amount" type="number" step="0.01" inputMode="decimal" placeholder="0.00" {...form.register("amount")} />
             <FieldError message={form.formState.errors.amount?.message} />
           </Field>
           <Field>

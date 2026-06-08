@@ -88,7 +88,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
 
   return (
     <main className="min-h-screen bg-[#fdf7ff] px-4 py-6 dark:bg-[#101423] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-5xl items-center gap-6 md:grid-cols-[0.9fr_1fr]">
+      <div className="mx-auto flex min-h-[calc(100svh-3rem)] w-full max-w-5xl flex-col justify-center gap-5 md:grid md:grid-cols-[0.9fr_1fr] md:items-center md:gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- Keep the logo as the original PNG without optimization. */}
@@ -120,7 +120,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
               {isRegister ? (
                 <Field>
                   <Label htmlFor="displayName">Display name</Label>
-                  <Input id="displayName" autoComplete="name" {...form.register("displayName")} />
+                  <Input id="displayName" autoComplete="name" placeholder="Enter your display name" {...form.register("displayName")} />
                   <FieldError message={form.formState.errors.displayName?.message?.toString()} />
                 </Field>
               ) : null}
@@ -128,7 +128,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
               {!isReset ? (
                 <Field>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" autoComplete="email" {...form.register("email")} />
+                  <Input id="email" type="email" autoComplete="email" placeholder="Enter your email" {...form.register("email")} />
                   <FieldError message={form.formState.errors.email?.message?.toString()} />
                 </Field>
               ) : null}
@@ -136,7 +136,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
               {!isForgot && !isReset ? (
                 <Field>
                   <Label htmlFor="password">Password</Label>
-                  <PasswordInput id="password" autoComplete={isLogin ? "current-password" : "new-password"} {...form.register("password")} />
+                  <PasswordInput
+                    id="password"
+                    autoComplete={isLogin ? "current-password" : "new-password"}
+                    placeholder={isLogin ? "Enter your password" : "Create a password"}
+                    {...form.register("password")}
+                  />
                   <FieldError message={form.formState.errors.password?.message?.toString()} />
                   {isLogin ? (
                     <Link className="self-end text-sm font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/forgot-password">
@@ -150,12 +155,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
                 <>
                   <Field>
                     <Label htmlFor="newPassword">New password</Label>
-                    <PasswordInput id="newPassword" autoComplete="new-password" {...form.register("newPassword")} />
+                    <PasswordInput id="newPassword" autoComplete="new-password" placeholder="Enter new password" {...form.register("newPassword")} />
                     <FieldError message={form.formState.errors.newPassword?.message?.toString()} />
                   </Field>
                   <Field>
                     <Label htmlFor="confirmNewPassword">Confirm new password</Label>
-                    <PasswordInput id="confirmNewPassword" autoComplete="new-password" {...form.register("confirmNewPassword")} />
+                    <PasswordInput id="confirmNewPassword" autoComplete="new-password" placeholder="Confirm new password" {...form.register("confirmNewPassword")} />
                     <FieldError message={form.formState.errors.confirmNewPassword?.message?.toString()} />
                   </Field>
                 </>

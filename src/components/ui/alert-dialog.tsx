@@ -46,7 +46,7 @@ export function ConfirmButton({
       <AnimatePresence>
         {open ? (
           <motion.div
-            className="fixed inset-0 z-50 flex items-end bg-slate-950/50 p-4 sm:items-center sm:justify-center"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

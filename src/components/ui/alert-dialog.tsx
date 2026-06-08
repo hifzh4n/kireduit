@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "./button";
 
@@ -43,8 +44,9 @@ export function ConfirmButton({
       >
         {children}
       </span>
-      <AnimatePresence>
-        {open ? (
+      {createPortal(
+        <AnimatePresence>
+          {open ? (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
             initial={{ opacity: 0 }}
@@ -72,7 +74,9 @@ export function ConfirmButton({
             </motion.div>
           </motion.div>
         ) : null}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -132,8 +133,9 @@ export function SwipeActionCard({
         {children}
       </div>
       </div>
-      <AnimatePresence>
-        {confirmOpen ? (
+      {createPortal(
+        <AnimatePresence>
+          {confirmOpen ? (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
             initial={{ opacity: 0 }}
@@ -169,7 +171,9 @@ export function SwipeActionCard({
             </motion.div>
           </motion.div>
         ) : null}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }

@@ -18,7 +18,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
       {debts.map((debt) => (
         <Link href={`/debts/${debt.id}`} key={debt.id} className="block">
           <Card className="flex items-center gap-3 p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-teal-100 text-teal-600 dark:bg-teal-950 dark:text-teal-200">
               <HandCoins className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
@@ -26,7 +26,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
                 <p className="truncate font-medium">{debt.personName}</p>
                 <Badge tone={debt.status === "paid" ? "emerald" : "amber"}>{debt.status === "paid" ? "Paid" : "Unpaid"}</Badge>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-slate-500 dark:text-slate-300">
                 {debt.dueDate ? `Due ${prettyDate(debt.dueDate)}` : debt.description || "No due date"}
               </p>
             </div>

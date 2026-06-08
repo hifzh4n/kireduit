@@ -87,7 +87,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
         : "Enter your new password from the reset link.";
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-6 dark:bg-slate-950 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#fdf7ff] px-4 py-6 dark:bg-[#101423] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-5xl items-center gap-6 md:grid-cols-[0.9fr_1fr]">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -98,12 +98,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
               className="h-16 w-16 shrink-0 object-contain"
             />
             <div>
-              <p className="text-lg font-semibold text-slate-950 dark:text-slate-100">KireDuit</p>
+              <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</p>
               <p className="text-sm text-slate-600 dark:text-slate-300">Simple money tracking</p>
             </div>
           </div>
           <div className="hidden max-w-sm space-y-2 md:block">
-            <h1 className="text-3xl font-semibold text-slate-950 dark:text-slate-100">Track money without clutter.</h1>
+            <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-100">Track money without clutter.</h1>
             <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
               Keep expenses, money you owe, and money owed to you in one clean personal dashboard.
             </p>
@@ -139,7 +139,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
                   <PasswordInput id="password" autoComplete={isLogin ? "current-password" : "new-password"} {...form.register("password")} />
                   <FieldError message={form.formState.errors.password?.message?.toString()} />
                   {isLogin ? (
-                    <Link className="self-end text-sm font-medium text-emerald-700 dark:text-emerald-300" href="/forgot-password">
+                    <Link className="self-end text-sm font-medium text-teal-600 dark:text-teal-200" href="/forgot-password">
                       Forgot password?
                     </Link>
                   ) : null}
@@ -166,16 +166,16 @@ export function AuthCard({ mode }: { mode: Mode }) {
               </Button>
             </form>
 
-            <div className="mt-4 space-y-2 text-center text-sm text-slate-500 dark:text-slate-400">
+            <div className="mt-4 space-y-2 text-center text-sm text-slate-500 dark:text-slate-300">
               {isLogin ? (
                 <p>
                   No account?{" "}
-                  <Link className="font-medium text-emerald-700 dark:text-emerald-300" href="/register">
+                  <Link className="font-medium text-teal-600 dark:text-teal-200" href="/register">
                     Register
                   </Link>
                 </p>
               ) : (
-                <Link className="font-medium text-emerald-700 dark:text-emerald-300" href="/login">
+                <Link className="font-medium text-teal-600 dark:text-teal-200" href="/login">
                   Back to login
                 </Link>
               )}

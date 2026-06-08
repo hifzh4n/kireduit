@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,7 +43,7 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+      <body className="min-h-full bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

@@ -16,7 +16,7 @@ export default function Page() {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Manage your account.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300">Manage your account.</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map((item) => {
@@ -24,12 +24,12 @@ export default function Page() {
           return (
             <Link href={item.href} key={item.href} className="block">
               <Card className="flex items-center gap-3 p-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-sky-100 text-teal-600 dark:bg-slate-800 dark:text-teal-200">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="font-medium">{item.label}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{item.description}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-300">{item.description}</p>
                 </div>
               </Card>
             </Link>

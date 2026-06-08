@@ -13,7 +13,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
     <input
       ref={ref}
       className={cn(
-        "flex h-11 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 dark:border-slate-800 dark:bg-slate-950",
+        "flex h-11 w-full min-w-0 max-w-full rounded-md border border-sky-100 bg-white/90 px-3 py-2 text-base outline-none transition focus:border-teal-300 focus:ring-2 focus:ring-teal-300/25 dark:border-slate-800 dark:bg-slate-950/80 sm:text-sm",
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLA
           ref={ref}
           type={visible ? "text" : "password"}
           className={cn(
-            "password-input flex h-11 w-full rounded-md border border-slate-200 bg-white px-3 py-2 pr-11 text-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 dark:border-slate-800 dark:bg-slate-950",
+            "password-input flex h-11 w-full min-w-0 max-w-full rounded-md border border-sky-100 bg-white/90 px-3 py-2 pr-11 text-base outline-none transition focus:border-teal-300 focus:ring-2 focus:ring-teal-300/25 dark:border-slate-800 dark:bg-slate-950/80 sm:text-sm",
             className,
           )}
           {...props}
@@ -41,7 +41,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLA
           type="button"
           aria-label={visible ? "Hide password" : "Show password"}
           onClick={() => setVisible((value) => !value)}
-          className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 transition hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-200"
         >
           {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
@@ -56,7 +56,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
     <textarea
       ref={ref}
       className={cn(
-        "min-h-24 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 dark:border-slate-800 dark:bg-slate-950",
+        "min-h-24 w-full min-w-0 max-w-full rounded-md border border-sky-100 bg-white/90 px-3 py-2 text-base outline-none transition focus:border-teal-300 focus:ring-2 focus:ring-teal-300/25 dark:border-slate-800 dark:bg-slate-950/80 sm:text-sm",
         className,
       )}
       {...props}
@@ -70,7 +70,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       className={cn(
-        "flex h-11 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 dark:border-slate-800 dark:bg-slate-950",
+        "flex h-11 w-full min-w-0 max-w-full rounded-md border border-sky-100 bg-white/90 px-3 py-2 text-base outline-none transition focus:border-teal-300 focus:ring-2 focus:ring-teal-300/25 dark:border-slate-800 dark:bg-slate-950/80 sm:text-sm",
         className,
       )}
       {...props}
@@ -81,9 +81,9 @@ Select.displayName = "Select";
 
 export function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="text-sm text-red-600">{message}</p>;
+  return <p className="text-sm text-rose-600">{message}</p>;
 }
 
 export function Field({ children }: { children: React.ReactNode }) {
-  return <div className="space-y-2">{children}</div>;
+  return <div className="min-w-0 space-y-2">{children}</div>;
 }

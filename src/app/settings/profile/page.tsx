@@ -32,12 +32,12 @@ export default function Page() {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-sm font-bold text-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-300 text-sm font-bold text-slate-800">
             {initials}
           </div>
           <div>
             <CardTitle>Profile</CardTitle>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Only your display name can be changed.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-300">Only your display name can be changed.</p>
           </div>
         </div>
       </CardHeader>
@@ -54,7 +54,7 @@ export default function Page() {
               id="email"
               value={profile?.email || user?.email || ""}
               disabled
-              className="cursor-not-allowed bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-400"
+              className="cursor-not-allowed bg-sky-100 text-slate-500 dark:bg-slate-900 dark:text-slate-400"
             />
           </Field>
           <Button className="w-full" disabled={form.formState.isSubmitting}>

@@ -76,7 +76,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
           </Field>
           <Field>
             <Label htmlFor="date">Date</Label>
-            <Input id="date" type="date" {...form.register("date")} />
+            <Input id="date" type="date" max={todayInput()} {...form.register("date")} />
             <FieldError message={form.formState.errors.date?.message} />
           </Field>
           <Field>

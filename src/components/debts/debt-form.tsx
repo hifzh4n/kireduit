@@ -92,7 +92,8 @@ export function DebtForm({ debt }: { debt?: Debt }) {
           </Field>
           <Field>
             <Label htmlFor="dueDate">Due date</Label>
-            <Input id="dueDate" type="date" {...form.register("dueDate")} />
+            <Input id="dueDate" type="date" max={todayInput()} {...form.register("dueDate")} />
+            <FieldError message={form.formState.errors.dueDate?.message} />
           </Field>
           <Field>
             <Label htmlFor="description">Description</Label>

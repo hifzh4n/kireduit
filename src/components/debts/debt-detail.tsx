@@ -35,7 +35,7 @@ export function DebtDetail({ debtId }: { debtId: string }) {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">{money(debt.amount)}</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">{debt.type === "i-owe" ? "I owe" : "Owe me"}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300">{debt.type === "i-owe" ? "I owe" : "Owe me"}</p>
       </div>
       <Card>
         <CardHeader>
@@ -43,19 +43,19 @@ export function DebtDetail({ debtId }: { debtId: string }) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-400">Person</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">Person</span>
             <span className="font-medium">{debt.personName}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">Status</span>
             <Badge tone={paid ? "emerald" : "amber"}>{paid ? "Paid" : "Unpaid"}</Badge>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-400">Due date</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">Due date</span>
             <span>{debt.dueDate ? prettyDate(debt.dueDate) : "No due date"}</span>
           </div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Description</p>
+            <p className="text-sm text-slate-500 dark:text-slate-300">Description</p>
             <p className="mt-1">{debt.description || "No description"}</p>
           </div>
         </CardContent>

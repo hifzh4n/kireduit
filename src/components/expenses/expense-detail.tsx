@@ -42,7 +42,7 @@ export function ExpenseDetail({ expenseId }: { expenseId: string }) {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">{money(expense.amount)}</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">{prettyDate(expense.date)}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300">{prettyDate(expense.date)}</p>
       </div>
       <Card>
         <CardHeader>
@@ -50,11 +50,11 @@ export function ExpenseDetail({ expenseId }: { expenseId: string }) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-400">Category</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">Category</span>
             <Badge>{expense.category}</Badge>
           </div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Description</p>
+            <p className="text-sm text-slate-500 dark:text-slate-300">Description</p>
             <p className="mt-1">{expense.description || "No description"}</p>
           </div>
         </CardContent>

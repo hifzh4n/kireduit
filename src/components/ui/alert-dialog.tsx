@@ -46,21 +46,21 @@ export function ConfirmButton({
       <AnimatePresence>
         {open ? (
           <motion.div
-            className="fixed inset-0 z-50 flex items-end bg-slate-950/60 p-4 sm:items-center sm:justify-center"
+            className="fixed inset-0 z-50 flex items-end bg-slate-950/50 p-4 sm:items-center sm:justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
           >
             <motion.div
-              className="w-full max-w-sm rounded-lg bg-white p-4 shadow-xl dark:bg-slate-900"
+              className="w-full max-w-sm rounded-lg border border-sky-100 bg-white/95 p-4 shadow-xl shadow-sky-100/40 dark:border-slate-800 dark:bg-slate-900"
               initial={{ opacity: 0, y: 18, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.96 }}
               transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
             >
             <h2 className="text-base font-semibold">{title}</h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{description}</p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel

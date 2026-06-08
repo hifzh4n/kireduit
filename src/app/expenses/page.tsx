@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ExpenseList } from "@/components/expenses/expense-list";
 import { Field, Input, Label, Select } from "@/components/ui/form";
 import { expenseCategories, type ExpenseCategory } from "@/lib/types";
+import { todayInput } from "@/lib/format";
 
 export default function Page() {
   const { expenses, loading } = useData();
@@ -29,7 +30,7 @@ export default function Page() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Expenses</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Track daily spending.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-300">Track daily spending.</p>
         </div>
         <Link href="/expenses/new">
           <Button size="icon" aria-label="Add expense">
@@ -37,7 +38,7 @@ export default function Page() {
           </Button>
         </Link>
       </div>
-      <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-2">
+      <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-2">
         <Field>
           <Label htmlFor="categoryFilter">Category</Label>
           <Select id="categoryFilter" value={category} onChange={(event) => setCategory(event.target.value as "all" | ExpenseCategory)}>
@@ -51,7 +52,7 @@ export default function Page() {
         </Field>
         <Field>
           <Label htmlFor="dateFilter">Date</Label>
-          <Input id="dateFilter" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+          <Input id="dateFilter" type="date" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
       </div>
       {loading ? <Skeleton className="h-44 w-full" /> : <ExpenseList expenses={filtered} />}

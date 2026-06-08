@@ -45,8 +45,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <Protected>
       <DataProvider>
-        <div className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
-          <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+        <div className="min-h-screen bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
+          <header className="sticky top-0 z-20 border-b border-sky-100 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-[#101423]/95">
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
               <div className="flex min-w-0 items-center gap-2">
                 <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
@@ -56,10 +56,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     alt="KireDuit logo"
                     className="h-12 w-12 shrink-0 object-contain"
                   />
-                  <span className="truncate text-lg font-semibold text-slate-950 dark:text-slate-100">KireDuit</span>
+                  <span className="truncate text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</span>
                 </Link>
               </div>
-              <BarChart3 className="h-5 w-5 shrink-0 text-emerald-600" />
+              <BarChart3 className="h-5 w-5 shrink-0 text-teal-400" />
             </div>
           </header>
 
@@ -76,7 +76,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <button
                     type="button"
                     onClick={() => router.back()}
-                    className="mb-4 inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    className="mb-4 inline-flex h-10 items-center gap-2 rounded-md border border-sky-100 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Back
@@ -101,7 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href="/expenses/new"
                       onClick={() => setAddOpen(false)}
-                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-emerald-500 bg-emerald-600 px-4 text-sm font-semibold text-white shadow-xl shadow-emerald-700/20 transition hover:bg-emerald-700"
+                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-teal-200 bg-teal-300 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-teal-200/40 hover:bg-teal-200 dark:border-teal-300 dark:bg-teal-300 dark:text-slate-900 dark:hover:bg-teal-200"
                     >
                       <ReceiptText className="h-4 w-4" />
                       Expense
@@ -116,35 +116,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href="/debts/new"
                       onClick={() => setAddOpen(false)}
-                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 shadow-xl shadow-slate-950/10 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
+                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-sky-100 bg-white/90 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-sky-100/40 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
                     >
-                      <HandCoins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                      <HandCoins className="h-4 w-4 text-teal-500 dark:text-teal-200" />
                       Debt
                     </Link>
                   </motion.div>
                 </motion.div>
               ) : null}
             </AnimatePresence>
-            <nav className="relative mx-auto grid h-[74px] w-full max-w-xl grid-cols-5 items-center rounded-md border border-slate-200 bg-white px-2 shadow-lg shadow-slate-950/10 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
+            <nav className="relative mx-auto grid h-16 w-full max-w-xl grid-cols-5 items-center rounded-2xl border border-sky-100 bg-white/90 px-2 shadow-lg shadow-sky-100/60 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/30">
               {navBeforeAdd.map((item) => (
                 <NavItem key={item.href} item={item} pathname={pathname} />
               ))}
-              <motion.button
+              <button
                 type="button"
                 onClick={() => setAddOpen((open) => !open)}
                 aria-label="Add new record"
                 aria-expanded={addOpen}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
-                animate={{ y: -32, rotate: 45, scale: addOpen ? 1.04 : 1 }}
-                transition={{ type: "spring", stiffness: 420, damping: 28 }}
                 className={cn(
-                  "relative mx-auto flex h-14 w-14 items-center justify-center rounded-md border-2 border-white bg-emerald-600 text-white shadow-xl shadow-emerald-700/25 transition hover:bg-emerald-700 dark:border-slate-900",
-                  addOpen && "bg-emerald-700 ring-4 ring-emerald-500/20",
+                  "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-teal-300 text-slate-800 shadow-md shadow-teal-200/50 hover:bg-teal-200 dark:border-slate-900 dark:bg-teal-300 dark:text-slate-900 dark:hover:bg-teal-200",
+                  addOpen && "bg-teal-200 ring-4 ring-teal-200/40",
                 )}
               >
-                {addOpen ? <X className="h-6 w-6 -rotate-45" /> : <Plus className="h-6 w-6 -rotate-45" />}
-              </motion.button>
+                {addOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+              </button>
               {navAfterAdd.map((item) => (
                 <NavItem key={item.href} item={item} pathname={pathname} />
               ))}
@@ -171,19 +167,18 @@ function NavItem({
       href={item.href}
       aria-label={item.label}
       className={cn(
-        "relative flex min-h-14 flex-col items-center justify-center gap-1 overflow-hidden rounded-md px-1 text-xs font-medium text-slate-400 transition hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400",
-        active && "text-emerald-600 dark:text-emerald-400",
+        "relative flex h-12 items-center justify-center overflow-hidden rounded-xl px-1 text-slate-400 transition hover:text-teal-500 dark:text-slate-400 dark:hover:text-teal-200",
+        active && "text-teal-500 dark:text-teal-200",
       )}
     >
       {active ? (
         <motion.span
           layoutId="bottom-nav-indicator"
-          className="absolute inset-x-1 bottom-1 top-1 rounded-md bg-emerald-500/10 dark:bg-emerald-400/10"
+          className="absolute inset-1 rounded-xl bg-teal-200/50 dark:bg-teal-300/10"
           transition={{ type: "spring", stiffness: 420, damping: 34 }}
         />
       ) : null}
       <Icon className="relative z-10 h-5 w-5" />
-      <span className="relative z-10 max-w-full truncate">{item.label}</span>
     </Link>
   );
 }

@@ -2,8 +2,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #fdf7ff;
+  --foreground: #1e293b;
+}
+
+.dark {
+  --background: #101423;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
@@ -16,6 +21,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 button,
@@ -24,6 +32,21 @@ input,
 select,
 textarea {
   -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+}
+
+input[type="date"] {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .password-input::-ms-reveal,

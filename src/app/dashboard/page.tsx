@@ -26,7 +26,7 @@ export default function Page() {
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Your money at a glance.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300">Your money at a glance.</p>
       </div>
 
       {loading ? (
@@ -42,8 +42,8 @@ export default function Page() {
             return (
               <Card key={item.label}>
                 <CardContent className="p-4">
-                  <Icon className="mb-3 h-5 w-5 text-emerald-600" />
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{item.label}</p>
+                  <Icon className="mb-3 h-5 w-5 text-teal-400" />
+                  <p className="text-xs text-slate-500 dark:text-slate-300">{item.label}</p>
                   <p className="mt-1 text-lg font-semibold">{item.value}</p>
                 </CardContent>
               </Card>
@@ -70,12 +70,12 @@ export default function Page() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Recent Expenses</h2>
-          <Link href="/expenses" className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+          <Link href="/expenses" className="text-sm font-medium text-teal-500 dark:text-teal-200">
             View all
           </Link>
         </div>
         {!loading && !expenses.length ? (
-          <p className="rounded-lg border border-dashed border-slate-200 bg-white p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+          <p className="rounded-lg border border-dashed border-sky-100 bg-white/80 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
             Your newest expenses will appear here after you add one.
           </p>
         ) : (
@@ -86,12 +86,12 @@ export default function Page() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Recent Debts</h2>
-          <Link href="/debts" className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+          <Link href="/debts" className="text-sm font-medium text-teal-500 dark:text-teal-200">
             View all
           </Link>
         </div>
         {!loading && !debts.length ? (
-          <p className="rounded-lg border border-dashed border-slate-200 bg-white p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+          <p className="rounded-lg border border-dashed border-sky-100 bg-white/80 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
             Your recent debt records will appear here after you add one.
           </p>
         ) : (

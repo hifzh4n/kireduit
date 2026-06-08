@@ -11,7 +11,7 @@ export function Card({ className, ...props }: HTMLMotionProps<"div">) {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
-      className={cn("rounded-lg border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100", className)}
+      className={cn("rounded-lg border border-sky-100 bg-white/90 text-slate-800 shadow-sm shadow-sky-100/40 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-100 dark:shadow-black/20", className)}
       {...props}
     />
   );
@@ -26,7 +26,7 @@ export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHead
 }
 
 export function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("text-sm text-slate-500 dark:text-slate-400", className)} {...props} />;
+  return <p className={cn("text-sm text-slate-500 dark:text-slate-300", className)} {...props} />;
 }
 
 export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

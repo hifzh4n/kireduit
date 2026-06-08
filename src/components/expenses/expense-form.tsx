@@ -10,7 +10,7 @@ import { todayInput } from "@/lib/format";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
+import { DateInput, Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
 
 type Values = {
   amount: number | "";
@@ -77,7 +77,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
           </Field>
           <Field>
             <Label htmlFor="date">Date</Label>
-            <Input id="date" type="date" max={todayInput()} {...form.register("date")} />
+            <DateInput id="date" max={todayInput()} defaultValue={expense?.date || todayInput()} {...form.register("date")} />
             <FieldError message={form.formState.errors.date?.message} />
           </Field>
           <Field>

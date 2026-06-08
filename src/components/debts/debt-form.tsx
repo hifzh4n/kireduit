@@ -10,7 +10,7 @@ import type { Debt } from "@/lib/types";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
+import { DateInput, Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
 
 type Values = {
   personName: string;
@@ -93,7 +93,7 @@ export function DebtForm({ debt }: { debt?: Debt }) {
           </Field>
           <Field>
             <Label htmlFor="dueDate">Due date</Label>
-            <Input id="dueDate" type="date" max={todayInput()} {...form.register("dueDate")} />
+            <DateInput id="dueDate" max={todayInput()} defaultValue={debt?.dueDate || todayInput()} {...form.register("dueDate")} />
             <FieldError message={form.formState.errors.dueDate?.message} />
           </Field>
           <Field>

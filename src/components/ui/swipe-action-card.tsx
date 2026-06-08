@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,9 @@ export function SwipeActionCard({
   const [busy, setBusy] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [navigationPending, setNavigationPending] = useState(false);
+  const thresholdNotified = useRef(false);
+  const activeAction = offset > threshold ? "edit" : offset < -threshold ? "delete" : null;
 
   function pointerDown(event: React.PointerEvent<HTMLDivElement>) {
     startX.current = event.clientX;
@@ -47,15 +50,26 @@ export function SwipeActionCard({
       event.currentTarget.setPointerCapture(event.pointerId);
     }
 
-    setOffset(Math.max(-maxPull, Math.min(maxPull, delta)));
+    const nextOffset = Math.max(-maxPull, Math.min(maxPull, delta));
+    const crossedThreshold = Math.abs(nextOffset) > threshold;
+    if (crossedThreshold && !thresholdNotified.current) {
+      thresholdNotified.current = true;
+      navigator.vibrate?.(8);
+    }
+    if (!crossedThreshold) {
+      thresholdNotified.current = false;
+    }
+    setOffset(nextOffset);
   }
 
   async function pointerUp() {
     dragging.current = false;
     setIsDragging(false);
+    thresholdNotified.current = false;
 
     if (offset > threshold) {
       setOffset(0);
+      setNavigationPending(true);
       router.push(editHref);
     } else if (offset < -threshold) {
       setOffset(0);
@@ -75,11 +89,13 @@ export function SwipeActionCard({
   }
 
   function openDetail() {
+    if (navigationPending) return;
     if (moved.current || offset !== 0) {
       setOffset(0);
       return;
     }
 
+    setNavigationPending(true);
     router.push(detailHref);
   }
 
@@ -88,24 +104,26 @@ export function SwipeActionCard({
       <div className="relative overflow-hidden rounded-lg">
       <div
         className={cn(
-          "pointer-events-none absolute inset-y-0 left-0 flex w-24 items-center justify-center rounded-l-lg bg-[var(--accent)] text-[var(--accent-ink)] transition-opacity",
+          "pointer-events-none absolute inset-y-0 left-0 flex w-24 items-center justify-center rounded-l-lg bg-[var(--accent)] text-[var(--accent-ink)] transition-all duration-150",
           offset > 8 ? "opacity-100" : "opacity-0",
+          activeAction === "edit" && "w-28 shadow-lg shadow-[var(--accent)]/25",
         )}
       >
-        <div className="flex flex-col items-center gap-1 text-xs font-semibold">
+        <div className={cn("flex flex-col items-center gap-1 text-xs font-semibold transition-transform duration-150", activeAction === "edit" && "scale-110")}>
           <Pencil className="h-4 w-4" />
-          Edit
+          {activeAction === "edit" ? "Release" : "Edit"}
         </div>
       </div>
       <div
         className={cn(
-          "pointer-events-none absolute inset-y-0 right-0 flex w-24 items-center justify-center rounded-r-lg bg-red-600 text-white shadow-lg shadow-red-600/30 transition-opacity",
+          "pointer-events-none absolute inset-y-0 right-0 flex w-24 items-center justify-center rounded-r-lg bg-red-600 text-white shadow-lg shadow-red-600/30 transition-all duration-150 dark:bg-red-500",
           offset < -8 ? "opacity-100" : "opacity-0",
+          activeAction === "delete" && "w-28 shadow-red-600/45",
         )}
       >
-        <div className="flex flex-col items-center gap-1 text-xs font-semibold">
+        <div className={cn("flex flex-col items-center gap-1 text-xs font-semibold transition-transform duration-150", activeAction === "delete" && "scale-110")}>
           <Trash2 className="h-4 w-4" />
-          Delete
+          {activeAction === "delete" ? "Release" : "Delete"}
         </div>
       </div>
       <div
@@ -116,6 +134,7 @@ export function SwipeActionCard({
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
+            setNavigationPending(true);
             router.push(detailHref);
           }
         }}
@@ -127,10 +146,20 @@ export function SwipeActionCard({
         style={{
           transform: `translateX(${offset}px)`,
           opacity: busy ? 0.6 : 1,
-          transition: isDragging ? "none" : "transform 180ms ease",
+          transition: isDragging ? "none" : "transform 180ms ease, scale 150ms ease",
+          scale: activeAction ? 0.985 : 1,
+          pointerEvents: navigationPending ? "none" : "auto",
         }}
       >
         {children}
+        {navigationPending ? (
+          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/70 backdrop-blur-[1px] dark:bg-slate-950/60">
+            <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-lg dark:bg-slate-900 dark:text-slate-100">
+              <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-text)] dark:text-[var(--accent)]" />
+              Loading
+            </div>
+          </div>
+        ) : null}
       </div>
       </div>
       {createPortal(

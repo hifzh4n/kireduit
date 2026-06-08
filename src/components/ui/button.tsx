@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex h-11 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium disabled:pointer-events-none disabled:opacity-50",
+  "rich-click-button relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-md px-4 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -33,8 +33,25 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => (
-    <button className={cn(buttonVariants({ variant, size }), className)} ref={ref} {...props} />
-  ),
+  ({ className, onClick, variant, size, ...props }, ref) => {
+    const [spinning, setSpinning] = React.useState(false);
+
+    return (
+      <button
+        className={cn(buttonVariants({ variant, size }), className)}
+        data-spinning={spinning ? "true" : undefined}
+        ref={ref}
+        onClick={(event) => {
+          if (!props.disabled) {
+            setSpinning(false);
+            window.requestAnimationFrame(() => setSpinning(true));
+            window.setTimeout(() => setSpinning(false), 950);
+          }
+          onClick?.(event);
+        }}
+        {...props}
+      />
+    );
+  },
 );
 Button.displayName = "Button";

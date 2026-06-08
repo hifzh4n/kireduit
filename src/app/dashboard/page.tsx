@@ -9,9 +9,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExpenseList } from "@/components/expenses/expense-list";
 import { DebtList } from "@/components/debts/debt-list";
+import { DataError } from "@/components/data-error";
+import { ListRowSkeleton } from "@/components/ui/list-row-skeleton";
 
 export default function Page() {
-  const { expenses, debts, loading } = useData();
+  const { expenses, debts, error, loading } = useData();
   const iOwe = debts.filter((debt) => debt.type === "i-owe" && debt.status === "unpaid").reduce((sum, debt) => sum + debt.amount, 0);
   const oweMe = debts.filter((debt) => debt.type === "owe-me" && debt.status === "unpaid").reduce((sum, debt) => sum + debt.amount, 0);
 
@@ -28,6 +30,7 @@ export default function Page() {
         <h1 className="text-2xl font-semibold">Dashboard</h1>
         <p className="text-sm text-slate-500 dark:text-slate-300">Your money at a glance.</p>
       </div>
+      <DataError message={error} />
 
       {loading ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -74,7 +77,9 @@ export default function Page() {
             View all
           </Link>
         </div>
-        {!loading && !expenses.length ? (
+        {loading ? (
+          <ListRowSkeleton rows={3} />
+        ) : !expenses.length ? (
           <p className="rounded-lg border border-dashed border-sky-100 bg-white/80 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
             Your newest expenses will appear here after you add one.
           </p>
@@ -90,7 +95,9 @@ export default function Page() {
             View all
           </Link>
         </div>
-        {!loading && !debts.length ? (
+        {loading ? (
+          <ListRowSkeleton rows={3} />
+        ) : !debts.length ? (
           <p className="rounded-lg border border-dashed border-sky-100 bg-white/80 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
             Your recent debt records will appear here after you add one.
           </p>

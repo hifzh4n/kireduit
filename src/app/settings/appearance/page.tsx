@@ -21,7 +21,7 @@ export default function Page() {
       <Card>
         <CardHeader>
           <CardTitle>Theme</CardTitle>
-          <CardDescription>Choose how KireDuit follows light and dark mode.</CardDescription>
+          <CardDescription>Choose light or dark mode, then customize the system accent color.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {options.map((option) => {

@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 const items = [
   { href: "/settings/profile", label: "Profile", description: "Display name and email", icon: User },
   { href: "/settings/security", label: "Security", description: "Change password", icon: Lock },
-  { href: "/settings/appearance", label: "Appearance", description: "Light and dark theme", icon: Moon },
+  { href: "/settings/appearance", label: "Appearance", description: "Theme and accent color", icon: Moon },
   { href: "/settings/account", label: "Account", description: "Logout or delete account", icon: UserX },
 ];
 

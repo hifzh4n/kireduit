@@ -2,20 +2,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { DebtList } from "@/components/debts/debt-list";
-import { Field, Input, Label } from "@/components/ui/form";
+import { DateInput, Field, Label } from "@/components/ui/form";
 import { todayInput } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { DataError } from "@/components/data-error";
+import { ListRowSkeleton } from "@/components/ui/list-row-skeleton";
 
 export default function Page() {
-  const { debts, loading } = useData();
+  const { debts, error, loading } = useData();
   const [tab, setTab] = useState<"i-owe" | "owe-me">("i-owe");
   const [status, setStatus] = useState<"all" | "paid" | "unpaid">("all");
   const [date, setDate] = useState("");
+  const hasFilters = status !== "all" || Boolean(date);
   const filtered = debts.filter((debt) => {
     const matchesType = debt.type === tab;
     const matchesStatus = status === "all" || debt.status === status;
@@ -36,6 +38,7 @@ export default function Page() {
           </Button>
         </Link>
       </div>
+      <DataError message={error} />
       <div className="grid grid-cols-2 rounded-lg bg-sky-100/70 p-1 dark:bg-slate-900">
         {[
           ["i-owe", "I Owe"],
@@ -67,13 +70,27 @@ export default function Page() {
           </button>
         ))}
       </div>
-      <div className="rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90">
+      <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-[1fr_auto]">
         <Field>
           <Label htmlFor="debtDateFilter">Due date</Label>
-          <Input id="debtDateFilter" type="date" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
+          <DateInput id="debtDateFilter" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
+        {hasFilters ? (
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-1 w-full self-end sm:mt-0 sm:w-auto"
+            onClick={() => {
+              setStatus("all");
+              setDate("");
+            }}
+          >
+            <X className="h-4 w-4" />
+            Clear
+          </Button>
+        ) : null}
       </div>
-      {loading ? <Skeleton className="h-44 w-full" /> : <DebtList debts={filtered} />}
+      {loading ? <ListRowSkeleton /> : <DebtList debts={filtered} />}
     </div>
   );
 }

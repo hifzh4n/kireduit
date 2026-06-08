@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ExpenseList } from "@/components/expenses/expense-list";
-import { Field, Input, Label, Select } from "@/components/ui/form";
+import { DateInput, Field, Label, Select } from "@/components/ui/form";
 import { expenseCategories, type ExpenseCategory } from "@/lib/types";
 import { todayInput } from "@/lib/format";
+import { DataError } from "@/components/data-error";
+import { ListRowSkeleton } from "@/components/ui/list-row-skeleton";
 
 export default function Page() {
-  const { expenses, loading } = useData();
+  const { expenses, error, loading } = useData();
   const [category, setCategory] = useState<"all" | ExpenseCategory>("all");
   const [date, setDate] = useState("");
+  const hasFilters = category !== "all" || Boolean(date);
   const filtered = useMemo(
     () =>
       expenses.filter((expense) => {
@@ -38,7 +40,8 @@ export default function Page() {
           </Button>
         </Link>
       </div>
-      <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-2">
+      <DataError message={error} />
+      <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-[1fr_1fr_auto]">
         <Field>
           <Label htmlFor="categoryFilter">Category</Label>
           <Select id="categoryFilter" value={category} onChange={(event) => setCategory(event.target.value as "all" | ExpenseCategory)}>
@@ -52,10 +55,24 @@ export default function Page() {
         </Field>
         <Field>
           <Label htmlFor="dateFilter">Date</Label>
-          <Input id="dateFilter" type="date" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
+          <DateInput id="dateFilter" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
+        {hasFilters ? (
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-1 w-full self-end sm:mt-0 sm:w-auto"
+            onClick={() => {
+              setCategory("all");
+              setDate("");
+            }}
+          >
+            <X className="h-4 w-4" />
+            Clear
+          </Button>
+        ) : null}
       </div>
-      {loading ? <Skeleton className="h-44 w-full" /> : <ExpenseList expenses={filtered} />}
+      {loading ? <ListRowSkeleton /> : <ExpenseList expenses={filtered} />}
     </div>
   );
 }

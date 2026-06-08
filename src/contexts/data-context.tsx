@@ -63,7 +63,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setExpensesLoading(false);
       },
       () => {
-        setError("Unable to load report. Please try again later.");
+        setError("Please try again later.");
         setExpensesLoading(false);
       },
     );
@@ -75,7 +75,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setDebtsLoading(false);
       },
       () => {
-        setError("Unable to load report. Please try again later.");
+        setError("Please try again later.");
         setDebtsLoading(false);
       },
     );

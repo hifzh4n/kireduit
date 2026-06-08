@@ -22,6 +22,42 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
 );
 Input.displayName = "Input";
 
+export const DateInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, defaultValue, onChange, placeholder = "Select date", value, ...props }, ref) => {
+    const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue?.toString() || "");
+    const hasValue = value !== undefined ? Boolean(value) : Boolean(uncontrolledValue);
+
+    return (
+      <div className="relative min-w-0">
+        <input
+          ref={ref}
+          type="date"
+          value={value}
+          defaultValue={defaultValue}
+          onChange={(event) => {
+            if (value === undefined) {
+              setUncontrolledValue(event.currentTarget.value);
+            }
+            onChange?.(event);
+          }}
+          className={cn(
+            "date-input flex h-11 w-full min-w-0 max-w-full rounded-md border border-sky-100 bg-white/90 px-3 py-2 text-base outline-none transition focus:border-[var(--accent-border)] focus:ring-2 focus:ring-[var(--accent-muted)] dark:border-slate-800 dark:bg-slate-950/80 sm:text-sm",
+            !hasValue && "text-transparent focus:text-slate-900 dark:focus:text-slate-100",
+            className,
+          )}
+          {...props}
+        />
+        {!hasValue ? (
+          <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-base text-slate-400 dark:text-slate-500 sm:text-sm">
+            {placeholder}
+          </span>
+        ) : null}
+      </div>
+    );
+  },
+);
+DateInput.displayName = "DateInput";
+
 export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => {
     const [visible, setVisible] = React.useState(false);

@@ -100,6 +100,22 @@ body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   touch-action: manipulation;
+  scrollbar-width: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 button,
@@ -123,6 +139,41 @@ input[type="date"] {
   width: 100%;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.date-input::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.rich-click-button::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background: conic-gradient(from 0deg, transparent, rgb(255 255 255 / 0.75), transparent 38%) border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rich-click-button[data-spinning="true"]::after {
+  animation: button-spin 1200ms linear;
+  opacity: 1;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .report-chart {

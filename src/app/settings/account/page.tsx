@@ -27,7 +27,7 @@ export default function Page() {
             title="Logout?"
             description="You will need to login again to access KireDuit."
             actionLabel="Logout"
-            variant="default"
+            variant="danger"
             onConfirm={async () => {
               try {
                 await logout();

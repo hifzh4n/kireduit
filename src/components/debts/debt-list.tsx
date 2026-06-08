@@ -1,14 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { HandCoins } from "lucide-react";
+import { toast } from "sonner";
 import { money, prettyDate } from "@/lib/format";
 import type { Debt } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
+import { SwipeActionCard } from "@/components/ui/swipe-action-card";
+import { useData } from "@/contexts/data-context";
 
 export function DebtList({ debts }: { debts: Debt[] }) {
+  const { deleteDebt } = useData();
+
   if (!debts.length) {
     return <EmptyState title="No debts found" description="Add a debt to remember who owes what." />;
   }
@@ -16,7 +20,15 @@ export function DebtList({ debts }: { debts: Debt[] }) {
   return (
     <div className="flex flex-col gap-3">
       {debts.map((debt) => (
-        <Link href={`/debts/${debt.id}`} key={debt.id} className="block">
+        <SwipeActionCard
+          key={debt.id}
+          detailHref={`/debts/${debt.id}`}
+          editHref={`/debts/${debt.id}/edit`}
+          onDelete={async () => {
+            await deleteDebt(debt.id);
+            toast.success("Debt deleted");
+          }}
+        >
           <Card className="flex items-center gap-3 p-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--accent-soft)] text-[var(--accent-text)] dark:bg-[var(--accent-muted)] dark:text-[var(--accent)]">
               <HandCoins className="h-5 w-5" />
@@ -32,7 +44,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
             </div>
             <p className="font-semibold">{money(debt.amount)}</p>
           </Card>
-        </Link>
+        </SwipeActionCard>
       ))}
     </div>
   );

@@ -3,7 +3,15 @@ import { expenseCategories } from "./types";
 
 function notFutureDate(value?: string) {
   if (!value) return true;
-  return value <= new Date().toISOString().slice(0, 10);
+  return value <= localTodayInput();
+}
+
+function localTodayInput() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export const authSchema = z.object({

@@ -139,7 +139,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
                   <PasswordInput id="password" autoComplete={isLogin ? "current-password" : "new-password"} {...form.register("password")} />
                   <FieldError message={form.formState.errors.password?.message?.toString()} />
                   {isLogin ? (
-                    <Link className="self-end text-sm font-medium text-teal-600 dark:text-teal-200" href="/forgot-password">
+                    <Link className="self-end text-sm font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/forgot-password">
                       Forgot password?
                     </Link>
                   ) : null}
@@ -170,12 +170,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
               {isLogin ? (
                 <p>
                   No account?{" "}
-                  <Link className="font-medium text-teal-600 dark:text-teal-200" href="/register">
+                  <Link className="font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/register">
                     Register
                   </Link>
                 </p>
               ) : (
-                <Link className="font-medium text-teal-600 dark:text-teal-200" href="/login">
+                <Link className="font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/login">
                   Back to login
                 </Link>
               )}

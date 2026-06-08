@@ -42,7 +42,7 @@ export default function Page() {
             return (
               <Card key={item.label}>
                 <CardContent className="p-4">
-                  <Icon className="mb-3 h-5 w-5 text-teal-400" />
+                  <Icon className="mb-3 h-5 w-5 text-[var(--accent-text)] dark:text-[var(--accent)]" />
                   <p className="text-xs text-slate-500 dark:text-slate-300">{item.label}</p>
                   <p className="mt-1 text-lg font-semibold">{item.value}</p>
                 </CardContent>
@@ -70,7 +70,7 @@ export default function Page() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Recent Expenses</h2>
-          <Link href="/expenses" className="text-sm font-medium text-teal-500 dark:text-teal-200">
+          <Link href="/expenses" className="text-sm font-medium text-[var(--accent-text)] dark:text-[var(--accent)]">
             View all
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function Page() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Recent Debts</h2>
-          <Link href="/debts" className="text-sm font-medium text-teal-500 dark:text-teal-200">
+          <Link href="/debts" className="text-sm font-medium text-[var(--accent-text)] dark:text-[var(--accent)]">
             View all
           </Link>
         </div>

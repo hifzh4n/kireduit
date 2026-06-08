@@ -4,11 +4,87 @@
 :root {
   --background: #fdf7ff;
   --foreground: #1e293b;
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-soft: #d1fae5;
+  --accent-muted: rgb(5 150 105 / 0.18);
+  --accent-border: #059669;
+  --accent-text: #047857;
+  --accent-ink: #ffffff;
+  --accent-shadow: rgb(5 150 105 / 0.3);
+  --chart-grid: #dbeafe;
+  --chart-text: #475569;
+  --chart-tooltip-bg: rgb(255 255 255 / 0.98);
+  --chart-tooltip-border: #bae6fd;
 }
 
 .dark {
   --background: #101423;
   --foreground: #f8fafc;
+  --chart-grid: #334155;
+  --chart-text: #cbd5e1;
+  --chart-tooltip-bg: rgb(15 23 42 / 0.98);
+  --chart-tooltip-border: #334155;
+}
+
+[data-accent="green"] {
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-soft: #d1fae5;
+  --accent-muted: rgb(5 150 105 / 0.18);
+  --accent-border: #059669;
+  --accent-text: #047857;
+  --accent-shadow: rgb(5 150 105 / 0.3);
+}
+
+[data-accent="red"] {
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --accent-soft: #fee2e2;
+  --accent-muted: rgb(220 38 38 / 0.18);
+  --accent-border: #dc2626;
+  --accent-text: #b91c1c;
+  --accent-shadow: rgb(220 38 38 / 0.3);
+}
+
+[data-accent="blue"] {
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #dbeafe;
+  --accent-muted: rgb(37 99 235 / 0.18);
+  --accent-border: #2563eb;
+  --accent-text: #2563eb;
+  --accent-shadow: rgb(37 99 235 / 0.3);
+}
+
+[data-accent="brown"] {
+  --accent: #92400e;
+  --accent-hover: #78350f;
+  --accent-soft: #ffedd5;
+  --accent-muted: rgb(146 64 14 / 0.18);
+  --accent-border: #92400e;
+  --accent-text: #92400e;
+  --accent-shadow: rgb(146 64 14 / 0.3);
+}
+
+[data-accent="purple"] {
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-soft: #ede9fe;
+  --accent-muted: rgb(124 58 237 / 0.18);
+  --accent-border: #7c3aed;
+  --accent-text: #7c3aed;
+  --accent-shadow: rgb(124 58 237 / 0.3);
+}
+
+[data-accent="pink"] {
+  --accent: #db2777;
+  --accent-hover: #be185d;
+  --accent-soft: #fce7f3;
+  --accent-muted: rgb(219 39 119 / 0.18);
+  --accent-border: #db2777;
+  --accent-text: #db2777;
+  --accent-shadow: rgb(219 39 119 / 0.3);
 }
 
 @theme inline {
@@ -47,6 +123,22 @@ input[type="date"] {
   width: 100%;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.report-chart {
+  color: var(--chart-text);
+}
+
+.report-chart text,
+.report-chart tspan,
+.report-chart .recharts-text,
+.report-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--chart-text) !important;
+  color: var(--chart-text) !important;
+}
+
+.report-chart .recharts-cartesian-grid line {
+  stroke: var(--chart-grid) !important;
 }
 
 .password-input::-ms-reveal,

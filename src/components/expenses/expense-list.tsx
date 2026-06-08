@@ -18,7 +18,7 @@ export function ExpenseList({ expenses }: { expenses: Expense[] }) {
       {expenses.map((expense) => (
         <Link href={`/expenses/${expense.id}`} key={expense.id} className="block">
           <Card className="flex items-center gap-3 p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-teal-100 text-teal-600 dark:bg-teal-950 dark:text-teal-200">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--accent-soft)] text-[var(--accent-text)] dark:bg-[var(--accent-muted)] dark:text-[var(--accent)]">
               <ReceiptText className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">

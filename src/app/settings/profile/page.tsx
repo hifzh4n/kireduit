@@ -32,7 +32,7 @@ export default function Page() {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-300 text-sm font-bold text-slate-800">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent)] text-sm font-bold text-[var(--accent-ink)]">
             {initials}
           </div>
           <div>

@@ -56,10 +56,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     alt="KireDuit logo"
                     className="h-12 w-12 shrink-0 object-contain"
                   />
-                  <span className="truncate text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</span>
+                  <span className="flex min-w-0 flex-col leading-tight">
+                    <span className="truncate text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</span>
+                    <span className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)] dark:text-[var(--accent)]">
+                      KIRA &bull; SIMPAN &bull; URUS
+                    </span>
+                  </span>
                 </Link>
               </div>
-              <BarChart3 className="h-5 w-5 shrink-0 text-teal-400" />
+              <Link href="/reports/monthly" aria-label="Monthly reports">
+                <BarChart3 className="h-5 w-5 shrink-0 text-[var(--accent-text)] dark:text-[var(--accent)]" />
+              </Link>
             </div>
           </header>
 
@@ -101,7 +108,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href="/expenses/new"
                       onClick={() => setAddOpen(false)}
-                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-teal-200 bg-teal-300 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-teal-200/40 hover:bg-teal-200 dark:border-teal-300 dark:bg-teal-300 dark:text-slate-900 dark:hover:bg-teal-200"
+                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-[var(--accent-border)] bg-[var(--accent)] px-4 text-sm font-semibold text-[var(--accent-ink)] shadow-xl shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)]"
                     >
                       <ReceiptText className="h-4 w-4" />
                       Expense
@@ -118,7 +125,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       onClick={() => setAddOpen(false)}
                       className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-sky-100 bg-white/90 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-sky-100/40 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
                     >
-                      <HandCoins className="h-4 w-4 text-teal-500 dark:text-teal-200" />
+                      <HandCoins className="h-4 w-4 text-[var(--accent-text)] dark:text-[var(--accent)]" />
                       Debt
                     </Link>
                   </motion.div>
@@ -135,8 +142,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 aria-label="Add new record"
                 aria-expanded={addOpen}
                 className={cn(
-                  "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-teal-300 text-slate-800 shadow-md shadow-teal-200/50 hover:bg-teal-200 dark:border-slate-900 dark:bg-teal-300 dark:text-slate-900 dark:hover:bg-teal-200",
-                  addOpen && "bg-teal-200 ring-4 ring-teal-200/40",
+                  "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[var(--accent)] text-[var(--accent-ink)] shadow-md shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)] dark:border-slate-900",
+                  addOpen && "bg-[var(--accent-hover)] ring-4 ring-[var(--accent-muted)]",
                 )}
               >
                 {addOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
@@ -167,14 +174,14 @@ function NavItem({
       href={item.href}
       aria-label={item.label}
       className={cn(
-        "relative flex h-12 items-center justify-center overflow-hidden rounded-xl px-1 text-slate-400 transition hover:text-teal-500 dark:text-slate-400 dark:hover:text-teal-200",
-        active && "text-teal-500 dark:text-teal-200",
+        "relative flex h-12 items-center justify-center overflow-hidden rounded-xl px-1 text-slate-400 transition hover:text-[var(--accent-text)] dark:text-slate-400 dark:hover:text-[var(--accent)]",
+        active && "text-[var(--accent-text)] dark:text-[var(--accent)]",
       )}
     >
       {active ? (
         <motion.span
           layoutId="bottom-nav-indicator"
-          className="absolute inset-1 rounded-xl bg-teal-200/50 dark:bg-teal-300/10"
+          className="absolute inset-1 rounded-xl bg-[var(--accent-muted)]"
           transition={{ type: "spring", stiffness: 420, damping: 34 }}
         />
       ) : null}

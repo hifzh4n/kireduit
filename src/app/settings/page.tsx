@@ -24,7 +24,7 @@ export default function Page() {
           return (
             <Link href={item.href} key={item.href} className="block">
               <Card className="flex items-center gap-3 p-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-sky-100 text-teal-600 dark:bg-slate-800 dark:text-teal-200">
+                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-[var(--accent-soft)] text-[var(--accent-text)] dark:bg-[var(--accent-muted)] dark:text-[var(--accent)]">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div>

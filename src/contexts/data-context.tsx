@@ -28,6 +28,7 @@ type DataContextValue = {
   expenses: Expense[];
   debts: Debt[];
   loading: boolean;
+  error: string | null;
   addExpense: (input: ExpenseInput) => Promise<void>;
   updateExpense: (id: string, input: ExpenseInput) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
@@ -45,6 +46,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [debts, setDebts] = useState<Debt[]>([]);
   const [expensesLoading, setExpensesLoading] = useState(true);
   const [debtsLoading, setDebtsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -54,15 +56,29 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const expensesQuery = query(collection(db, "users", user.uid, "expenses"), orderBy("date", "desc"));
     const debtsQuery = query(collection(db, "users", user.uid, "debts"), orderBy("createdAt", "desc"));
 
-    const unsubscribeExpenses = onSnapshot(expensesQuery, (snapshot) => {
-      setExpenses(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as Expense));
-      setExpensesLoading(false);
-    });
+    const unsubscribeExpenses = onSnapshot(
+      expensesQuery,
+      (snapshot) => {
+        setExpenses(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as Expense));
+        setExpensesLoading(false);
+      },
+      () => {
+        setError("Unable to load report. Please try again later.");
+        setExpensesLoading(false);
+      },
+    );
 
-    const unsubscribeDebts = onSnapshot(debtsQuery, (snapshot) => {
-      setDebts(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as Debt));
-      setDebtsLoading(false);
-    });
+    const unsubscribeDebts = onSnapshot(
+      debtsQuery,
+      (snapshot) => {
+        setDebts(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as Debt));
+        setDebtsLoading(false);
+      },
+      () => {
+        setError("Unable to load report. Please try again later.");
+        setDebtsLoading(false);
+      },
+    );
 
     return () => {
       unsubscribeExpenses();
@@ -75,6 +91,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       expenses,
       debts,
       loading: expensesLoading || debtsLoading,
+      error,
       async addExpense(input) {
         if (!user) return;
         await addDoc(collection(db, "users", user.uid, "expenses"), {
@@ -129,7 +146,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         });
       },
     }),
-    [debts, debtsLoading, expenses, expensesLoading, user],
+    [debts, debtsLoading, error, expenses, expensesLoading, user],
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

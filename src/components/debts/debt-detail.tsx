@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function DebtDetail({ debtId }: { debtId: string }) {
   const router = useRouter();
-  const { debts, deleteDebt, markDebt, loading } = useData();
+  const { debts, deleteDebt, markDebt, restoreDebt, loading } = useData();
   const debt = debts.find((item) => item.id === debtId);
 
   if (loading) {
@@ -51,8 +51,8 @@ export function DebtDetail({ debtId }: { debtId: string }) {
             <Badge tone={paid ? "emerald" : "amber"}>{paid ? "Paid" : "Unpaid"}</Badge>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-300">Due date</span>
-            <span>{debt.dueDate ? prettyDate(debt.dueDate) : "No due date"}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">Debt date</span>
+            <span>{debt.dueDate ? prettyDate(debt.dueDate) : "No debt date"}</span>
           </div>
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-300">Description</p>
@@ -89,10 +89,15 @@ export function DebtDetail({ debtId }: { debtId: string }) {
           </Link>
           <ConfirmButton
             title="Delete debt?"
-            description="This debt record will be removed permanently."
+            description="This debt record will move to recently deleted for 30 days."
             onConfirm={async () => {
               await deleteDebt(debt.id);
-              toast.success("Debt deleted");
+              toast.success("Debt moved to recently deleted", {
+                action: {
+                  label: "Undo",
+                  onClick: () => void restoreDebt(debt.id),
+                },
+              });
               router.push("/debts");
             }}
           >

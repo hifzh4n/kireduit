@@ -12,6 +12,14 @@ service cloud.firestore {
       match /debts/{debtId} {
         allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
       }
+
+      match /deletedExpenses/{expenseId} {
+        allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /deletedDebts/{debtId} {
+        allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }

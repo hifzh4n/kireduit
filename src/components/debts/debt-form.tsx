@@ -92,7 +92,7 @@ export function DebtForm({ debt }: { debt?: Debt }) {
             </Select>
           </Field>
           <Field>
-            <Label htmlFor="dueDate">Due date</Label>
+            <Label htmlFor="dueDate">Debt date</Label>
             <DateInput id="dueDate" max={todayInput()} defaultValue={debt?.dueDate || todayInput()} {...form.register("dueDate")} />
             <FieldError message={form.formState.errors.dueDate?.message} />
           </Field>

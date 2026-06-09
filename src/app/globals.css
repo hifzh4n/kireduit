@@ -192,6 +192,13 @@ input[type="date"] {
   stroke: var(--chart-grid) !important;
 }
 
+.report-chart *:focus,
+.report-chart *:focus-visible,
+.report-chart svg:focus,
+.report-chart svg:focus-visible {
+  outline: none !important;
+}
+
 .password-input::-ms-reveal,
 .password-input::-ms-clear {
   display: none;

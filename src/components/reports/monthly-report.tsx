@@ -267,9 +267,15 @@ export function MonthlyReport() {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                   <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} tickFormatter={(value) => `RM${value}`} />
-                  <Tooltip formatter={(value) => money(Number(value))} contentStyle={tooltipStyle} labelStyle={tooltipLabelStyle} itemStyle={{ color: "var(--foreground)" }} />
-                  <Bar dataKey="unpaid" name="Unpaid" fill="var(--accent)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="paid" name="Paid" fill="var(--accent-hover)" fillOpacity={0.55} radius={[6, 6, 0, 0]} />
+                  <Tooltip
+                    formatter={(value) => money(Number(value))}
+                    contentStyle={tooltipStyle}
+                    labelStyle={tooltipLabelStyle}
+                    itemStyle={{ color: "var(--foreground)" }}
+                    cursor={{ fill: "transparent" }}
+                  />
+                  <Bar dataKey="unpaid" name="Unpaid" fill="var(--accent)" background={false} radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="paid" name="Paid" fill="var(--accent-hover)" fillOpacity={0.55} background={false} radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -2,7 +2,7 @@
 
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { enableIndexedDbPersistence, getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo-api-key",
@@ -20,12 +20,13 @@ export const isFirebaseConfigured = Boolean(
     process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
 );
 
-export const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const existingApps = getApps();
 
-if (typeof window !== "undefined") {
-  void enableIndexedDbPersistence(db).catch(() => {
-    // Offline persistence can fail in private browsing or when multiple tabs compete.
-  });
-}
+export const app = existingApps.length ? existingApps[0] : initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = existingApps.length
+  ? getFirestore(app)
+  : initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+      experimentalAutoDetectLongPolling: true,
+    });

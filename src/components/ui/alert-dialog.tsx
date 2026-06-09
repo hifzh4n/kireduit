@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
+import { toast } from "sonner";
 import { Button } from "./button";
 
 export function ConfirmButton({
@@ -30,6 +31,8 @@ export function ConfirmButton({
     try {
       await onConfirm();
       setOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to complete action.");
     } finally {
       setBusy(false);
     }
@@ -79,4 +82,12 @@ export function ConfirmButton({
       )}
     </>
   );
+}
+
+function friendlyFirebaseMessage(message: string) {
+  if (message.toLowerCase().includes("permission")) {
+    return "Missing Firestore permission. Deploy the latest Firestore rules and try again.";
+  }
+
+  return message || "Unable to complete action.";
 }

@@ -5,7 +5,7 @@ import { type Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { expenseSchema } from "@/lib/schemas";
-import { expenseCategories, type Expense } from "@/lib/types";
+import { expenseCategories, type Expense, type ExpenseCategory } from "@/lib/types";
 import { todayInput } from "@/lib/format";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { DateInput, Field, FieldError, Input, Label, Select, Textarea } from "@/
 
 type Values = {
   amount: number | "";
-  category: Expense["category"];
+  category: Expense["category"] | "";
   date: string;
   description?: string;
 };
@@ -26,7 +26,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
     resolver: zodResolver(expenseSchema) as unknown as Resolver<Values>,
     defaultValues: {
       amount: expense?.amount ?? "",
-      category: expense?.category || "Food",
+      category: expense?.category || "",
       date: expense?.date || todayInput(),
       description: expense?.description || "",
     },
@@ -34,7 +34,8 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
 
   async function submit(values: Values) {
     try {
-      const input = { ...values, amount: Number(values.amount) };
+      if (!values.category) return;
+      const input = { ...values, amount: Number(values.amount), category: values.category as ExpenseCategory };
       if (expense) {
         await updateExpense(expense.id, input);
         toast.success("Expense updated");
@@ -43,7 +44,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
         toast.success("Expense added");
         form.reset({
           amount: "",
-          category: "Food",
+          category: "",
           date: todayInput(),
           description: "",
         });
@@ -69,8 +70,9 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
           <Field>
             <Label htmlFor="category">Category</Label>
             <Select id="category" {...form.register("category")}>
+              <option value="">Select Category</option>
               {expenseCategories.map((category) => (
-                <option key={category}>{category}</option>
+                <option key={category} value={category}>{category}</option>
               ))}
             </Select>
             <FieldError message={form.formState.errors.category?.message} />

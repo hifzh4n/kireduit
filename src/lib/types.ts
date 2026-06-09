@@ -45,3 +45,13 @@ export type Debt = {
   updatedAt?: Timestamp;
   userId: string;
 };
+
+export type DeletedExpense = Expense & {
+  deletedAt: number;
+  expiresAt: number;
+};
+
+export type DeletedDebt = Debt & {
+  deletedAt: number;
+  expiresAt: number;
+};

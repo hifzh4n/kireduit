@@ -11,7 +11,7 @@ import { SwipeActionCard } from "@/components/ui/swipe-action-card";
 import { useData } from "@/contexts/data-context";
 
 export function DebtList({ debts }: { debts: Debt[] }) {
-  const { deleteDebt } = useData();
+  const { deleteDebt, restoreDebt } = useData();
 
   if (!debts.length) {
     return <EmptyState title="No debts found" description="Add a debt to remember who owes what." />;
@@ -26,7 +26,12 @@ export function DebtList({ debts }: { debts: Debt[] }) {
           editHref={`/debts/${debt.id}/edit`}
           onDelete={async () => {
             await deleteDebt(debt.id);
-            toast.success("Debt deleted");
+            toast.success("Debt moved to recently deleted", {
+              action: {
+                label: "Undo",
+                onClick: () => void restoreDebt(debt.id),
+              },
+            });
           }}
         >
           <Card className="flex items-center gap-3 p-4">
@@ -39,7 +44,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
                 <Badge tone={debt.status === "paid" ? "emerald" : "amber"}>{debt.status === "paid" ? "Paid" : "Unpaid"}</Badge>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-300">
-                {debt.dueDate ? `Due ${prettyDate(debt.dueDate)}` : debt.description || "No due date"}
+                {debt.dueDate ? `Debt date ${prettyDate(debt.dueDate)}` : debt.description || "No debt date"}
               </p>
             </div>
             <p className="font-semibold">{money(debt.amount)}</p>

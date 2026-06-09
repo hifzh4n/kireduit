@@ -11,10 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmButton } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ExpenseCategoryIcon } from "./expense-category-icon";
 
 export function ExpenseDetail({ expenseId }: { expenseId: string }) {
   const router = useRouter();
-  const { expenses, deleteExpense, loading } = useData();
+  const { expenses, deleteExpense, restoreExpense, loading } = useData();
   const expense = expenses.find((item) => item.id === expenseId);
 
   if (loading) {
@@ -26,7 +27,6 @@ export function ExpenseDetail({ expenseId }: { expenseId: string }) {
       </div>
     );
   }
-
   if (!expense) {
     return (
       <Card className="p-4">
@@ -51,7 +51,10 @@ export function ExpenseDetail({ expenseId }: { expenseId: string }) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-500 dark:text-slate-300">Category</span>
-            <Badge>{expense.category}</Badge>
+            <Badge className="gap-1.5">
+              <ExpenseCategoryIcon category={expense.category} className="h-3.5 w-3.5" />
+              {expense.category}
+            </Badge>
           </div>
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-300">Description</p>
@@ -68,10 +71,15 @@ export function ExpenseDetail({ expenseId }: { expenseId: string }) {
         </Link>
         <ConfirmButton
           title="Delete expense?"
-          description="This expense will be removed permanently."
+          description="This expense will move to recently deleted for 30 days."
           onConfirm={async () => {
             await deleteExpense(expense.id);
-            toast.success("Expense deleted");
+            toast.success("Expense moved to recently deleted", {
+              action: {
+                label: "Undo",
+                onClick: () => void restoreExpense(expense.id),
+              },
+            });
             router.push("/expenses");
           }}
         >

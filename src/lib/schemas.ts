@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { expenseCategories } from "./types";
 
+const expenseCategoryValues = ["", ...expenseCategories] as const;
+
 function notFutureDate(value?: string) {
   if (!value) return true;
   return value <= localTodayInput();
@@ -37,7 +39,7 @@ export const resetSchema = z.object({
 
 export const expenseSchema = z.object({
   amount: z.coerce.number().positive("Amount must be more than 0."),
-  category: z.enum(expenseCategories),
+  category: z.enum(expenseCategoryValues).refine((value) => value !== "", "Select a category."),
   date: z.string().min(1, "Choose a date.").refine(notFutureDate, "Future dates are not allowed."),
   description: z.string().max(160, "Keep it below 160 characters.").optional(),
 });

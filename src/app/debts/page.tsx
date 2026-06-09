@@ -72,7 +72,7 @@ export default function Page() {
       </div>
       <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-[1fr_auto]">
         <Field>
-          <Label htmlFor="debtDateFilter">Due date</Label>
+          <Label htmlFor="debtDateFilter">Debt date</Label>
           <DateInput id="debtDateFilter" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
         {hasFilters ? (

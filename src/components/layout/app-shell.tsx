@@ -97,7 +97,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </PullToRefresh>
           </main>
 
-          <div ref={addMenuRef} className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4">
+          <div
+            ref={addMenuRef}
+            className="fixed inset-x-0 bottom-0 z-20 bg-[#fdf7ff] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 dark:bg-[#101423]"
+          >
             <AnimatePresence>
               {addOpen ? (
                 <motion.div

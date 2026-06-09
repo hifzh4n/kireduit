@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -83,6 +84,8 @@ export function SwipeActionCard({
     setBusy(true);
     try {
       await onDelete();
+    } catch (error) {
+      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to delete record.");
     } finally {
       setBusy(false);
     }
@@ -205,4 +208,12 @@ export function SwipeActionCard({
       )}
     </>
   );
+}
+
+function friendlyFirebaseMessage(message: string) {
+  if (message.toLowerCase().includes("permission")) {
+    return "Missing Firestore permission. Deploy the latest Firestore rules and try again.";
+  }
+
+  return message || "Unable to complete action.";
 }

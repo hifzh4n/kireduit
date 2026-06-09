@@ -45,27 +45,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const fallbackProfile = {
+      displayName: nextUser.displayName || "KireDuit User",
+      email: nextUser.email || "",
+    };
+
     const ref = doc(db, "users", nextUser.uid);
-    const snapshot = await getDoc(ref);
-    if (snapshot.exists()) {
-      setProfile(snapshot.data() as UserProfile);
-    } else {
-      const fallback = {
-        displayName: nextUser.displayName || "KireDuit User",
-        email: nextUser.email || "",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
-      await setDoc(ref, fallback);
-      setProfile({ displayName: fallback.displayName, email: fallback.email });
+    try {
+      const snapshot = await getDoc(ref);
+      if (snapshot.exists()) {
+        setProfile(snapshot.data() as UserProfile);
+      } else {
+        await setDoc(ref, {
+          ...fallbackProfile,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+        setProfile(fallbackProfile);
+      }
+    } catch {
+      setProfile(fallbackProfile);
     }
   }
 
   useEffect(() => {
     return onAuthStateChanged(auth, async (nextUser) => {
       setUser(nextUser);
-      await loadProfile(nextUser);
-      setLoading(false);
+      try {
+        await loadProfile(nextUser);
+      } finally {
+        setLoading(false);
+      }
     });
   }, []);
 
@@ -119,8 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const batch = writeBatch(db);
         const expenses = await getDocs(collection(db, "users", userId, "expenses"));
         const debts = await getDocs(collection(db, "users", userId, "debts"));
+        const deletedExpenses = await getDocs(collection(db, "users", userId, "deletedExpenses"));
+        const deletedDebts = await getDocs(collection(db, "users", userId, "deletedDebts"));
         expenses.forEach((item) => batch.delete(item.ref));
         debts.forEach((item) => batch.delete(item.ref));
+        deletedExpenses.forEach((item) => batch.delete(item.ref));
+        deletedDebts.forEach((item) => batch.delete(item.ref));
         batch.delete(doc(db, "users", userId));
         await batch.commit();
         await deleteUser(auth.currentUser);

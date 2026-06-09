@@ -99,65 +99,67 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <div
             ref={addMenuRef}
-            className="fixed inset-x-0 bottom-0 z-20 bg-[#fdf7ff] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 dark:bg-[#101423]"
+            className="pointer-events-none fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
           >
-            <AnimatePresence>
-              {addOpen ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 14, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.96 }}
-                  transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
-                  className="mx-auto mb-7 flex w-full max-w-xl items-end justify-center gap-3 px-8"
-                >
-                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: 0.18 }}>
-                    <Link
-                      href="/expenses/new"
-                      onClick={() => setAddOpen(false)}
-                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-[var(--accent-border)] bg-[var(--accent)] px-4 text-sm font-semibold text-[var(--accent-ink)] shadow-xl shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)]"
-                    >
-                      <ReceiptText className="h-4 w-4" />
-                      Expense
-                    </Link>
-                  </motion.div>
+            <div className="pointer-events-auto relative mx-auto w-full max-w-xl">
+              <AnimatePresence>
+                {addOpen ? (
                   <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    transition={{ duration: 0.18, delay: 0.03 }}
+                    initial={{ opacity: 0, y: 14, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.96 }}
+                    transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
+                    className="absolute inset-x-0 bottom-[4.75rem] flex items-end justify-center gap-3 px-8"
                   >
-                    <Link
-                      href="/debts/new"
-                      onClick={() => setAddOpen(false)}
-                      className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-sky-100 bg-white/90 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-sky-100/40 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
+                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: 0.18 }}>
+                      <Link
+                        href="/expenses/new"
+                        onClick={() => setAddOpen(false)}
+                        className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-[var(--accent-border)] bg-[var(--accent)] px-4 text-sm font-semibold text-[var(--accent-ink)] shadow-xl shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)]"
+                      >
+                        <ReceiptText className="h-4 w-4" />
+                        Expense
+                      </Link>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 6 }}
+                      transition={{ duration: 0.18, delay: 0.03 }}
                     >
-                      <HandCoins className="h-4 w-4 text-[var(--accent-text)] dark:text-[var(--accent)]" />
-                      Debt
-                    </Link>
+                      <Link
+                        href="/debts/new"
+                        onClick={() => setAddOpen(false)}
+                        className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-sky-100 bg-white/90 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-sky-100/40 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
+                      >
+                        <HandCoins className="h-4 w-4 text-[var(--accent-text)] dark:text-[var(--accent)]" />
+                        Debt
+                      </Link>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-            <nav className="relative mx-auto grid h-16 w-full max-w-xl grid-cols-5 items-center rounded-2xl border border-sky-100 bg-white/90 px-2 shadow-lg shadow-sky-100/60 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/30">
-              {navBeforeAdd.map((item) => (
-                <NavItem key={item.href} item={item} pathname={pathname} />
-              ))}
-              <button
-                type="button"
-                onClick={() => setAddOpen((open) => !open)}
-                aria-label="Add new record"
-                aria-expanded={addOpen}
-                className={cn(
-                  "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[var(--accent)] text-[var(--accent-ink)] shadow-md shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)] dark:border-slate-900",
-                  addOpen && "bg-[var(--accent-hover)] ring-4 ring-[var(--accent-muted)]",
-                )}
-              >
-                {addOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-              </button>
-              {navAfterAdd.map((item) => (
-                <NavItem key={item.href} item={item} pathname={pathname} />
-              ))}
-            </nav>
+                ) : null}
+              </AnimatePresence>
+              <nav className="relative grid h-16 w-full grid-cols-5 items-center rounded-2xl border border-sky-100 bg-white/90 px-2 shadow-lg shadow-sky-100/60 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/30">
+                {navBeforeAdd.map((item) => (
+                  <NavItem key={item.href} item={item} pathname={pathname} />
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setAddOpen((open) => !open)}
+                  aria-label="Add new record"
+                  aria-expanded={addOpen}
+                  className={cn(
+                    "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[var(--accent)] text-[var(--accent-ink)] shadow-md shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)] dark:border-slate-900",
+                    addOpen && "bg-[var(--accent-hover)] ring-4 ring-[var(--accent-muted)]",
+                  )}
+                >
+                  {addOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                </button>
+                {navAfterAdd.map((item) => (
+                  <NavItem key={item.href} item={item} pathname={pathname} />
+                ))}
+              </nav>
+            </div>
           </div>
         </div>
       </DataProvider>

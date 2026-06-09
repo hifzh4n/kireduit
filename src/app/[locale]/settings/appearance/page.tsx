@@ -1,27 +1,29 @@
 "use client";
 
 import { Monitor, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { accentOptions, useAccent } from "@/contexts/accent-context";
+import { type Theme, useTheme } from "@/contexts/theme-context";
 import { cn } from "@/lib/utils";
 
 export default function Page() {
+  const t = useTranslations("Settings");
   const { setTheme, theme } = useTheme();
   const { accent, setAccent } = useAccent();
-  const options = [
-    { value: "light", label: "Light Theme", icon: Sun },
-    { value: "dark", label: "Dark Theme", icon: Moon },
-    { value: "system", label: "Use System", icon: Monitor },
+  const options: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
+    { value: "light", label: t("lightTheme"), icon: Sun },
+    { value: "dark", label: t("darkTheme"), icon: Moon },
+    { value: "system", label: t("useSystem"), icon: Monitor },
   ];
 
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>Theme</CardTitle>
-          <CardDescription>Choose light or dark mode, then customize the system accent color.</CardDescription>
+          <CardTitle>{t("theme")}</CardTitle>
+          <CardDescription>{t("themeDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {options.map((option) => {
@@ -43,8 +45,8 @@ export default function Page() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Accent Color</CardTitle>
-          <CardDescription>Pick a bold color for buttons, icons, links, and highlights.</CardDescription>
+          <CardTitle>{t("accentColor")}</CardTitle>
+          <CardDescription>{t("accentDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -62,7 +64,7 @@ export default function Page() {
                   className="h-7 w-7 rounded-full border border-white shadow-sm"
                   style={{ backgroundColor: option.swatch }}
                 />
-                {option.label}
+                {t(option.value)}
               </button>
             ))}
           </div>

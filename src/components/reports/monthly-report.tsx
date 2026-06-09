@@ -11,6 +11,8 @@ import {
   parseISO,
   startOfMonth,
 } from "date-fns";
+import { enUS, ms } from "date-fns/locale";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Bar,
   BarChart,
@@ -55,6 +57,13 @@ const tooltipLabelStyle = {
 };
 
 export function MonthlyReport() {
+  const locale = useLocale();
+  const dateLocale = locale === "ms" ? ms : enUS;
+  const t = useTranslations("Reports");
+  const tCommon = useTranslations("Common");
+  const tCategories = useTranslations("Categories");
+  const tDebts = useTranslations("Debts");
+  const tErrors = useTranslations("Errors");
   const { expenses, debts, error, loading } = useData();
   const [selectedMonth, setSelectedMonth] = useState(() => startOfMonth(new Date()));
   const [categoryFilter, setCategoryFilter] = useState<"all" | ExpenseCategory>("all");
@@ -64,7 +73,23 @@ export function MonthlyReport() {
     () => buildMonthlyReport(expenses, debts, addMonths(selectedMonth, -1), categoryFilter),
     [categoryFilter, debts, expenses, selectedMonth],
   );
-  const comparison = getMonthComparison(report.totalMonthlyExpenses, previousReport.totalMonthlyExpenses);
+  const comparison = getMonthComparison(report.totalMonthlyExpenses, previousReport.totalMonthlyExpenses, t);
+  const monthLabel = format(selectedMonth, "MMMM yyyy", { locale: dateLocale });
+  const shortMonthLabel = format(selectedMonth, "MMM yyyy", { locale: dateLocale });
+  const categoryLabel = (category: ExpenseCategory) => tCategories(category);
+  const insights = [
+    report.highestSpendingCategory
+      ? t("spentMostOn", { category: categoryLabel(report.highestSpendingCategory) })
+      : t("noCategoryStandsOut"),
+    t("averageDailyInsight", { amount: money(report.averageDailySpending) }),
+    report.biggestExpense
+      ? t("largestExpenseInsight", { amount: money(report.biggestExpense.amount), category: categoryLabel(report.biggestExpense.category) })
+      : t("noLargestExpense"),
+  ];
+  const debtChartData = [
+    { ...report.debtChartData[0], name: tDebts("iOwe") },
+    { ...report.debtChartData[1], name: tDebts("oweMe") },
+  ];
 
   if (loading) {
     return <ReportSkeleton />;
@@ -76,8 +101,8 @@ export function MonthlyReport() {
         <CardContent className="flex items-start gap-3 p-4">
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-rose-500" />
           <div>
-            <p className="font-semibold">Unable to load report.</p>
-            <p className="text-sm text-slate-500 dark:text-slate-300">Please try again later.</p>
+            <p className="font-semibold">{t("unableToLoad")}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-300">{tErrors("tryAgain")}</p>
           </div>
         </CardContent>
       </Card>
@@ -90,8 +115,8 @@ export function MonthlyReport() {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">Monthly Report</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-300">Expenses and debts for the selected month.</p>
+          <h1 className="text-2xl font-semibold">{t("title")}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-300">{t("description")}</p>
         </div>
       </div>
 
@@ -102,36 +127,36 @@ export function MonthlyReport() {
               <CalendarDays className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-300">Selected Month</p>
-              <p className="text-lg font-semibold">{format(selectedMonth, "MMMM yyyy")}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-300">{t("selectedMonth")}</p>
+              <p className="text-lg font-semibold">{monthLabel}</p>
             </div>
           </div>
           <div className="grid gap-2 sm:grid-cols-[1fr_1.15fr]">
             <div className="grid grid-cols-3 gap-2">
               <Button variant="outline" size="sm" onClick={() => setSelectedMonth((month) => addMonths(month, -1))}>
                 <ChevronLeft className="h-4 w-4" />
-                Prev
+                {t("previous")}
               </Button>
               <Button variant="secondary" size="sm" onClick={() => setSelectedMonth(startOfMonth(new Date()))}>
-                Current
+                {t("current")}
               </Button>
               <Button variant="outline" size="sm" onClick={() => setSelectedMonth((month) => addMonths(month, 1))}>
-                Next
+                {t("next")}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex items-center gap-2 rounded-md border border-sky-100 bg-white/80 px-2 dark:border-slate-800 dark:bg-slate-950/60">
               <Filter className="h-4 w-4 text-[var(--accent-text)] dark:text-[var(--accent)]" />
               <Select
-                aria-label="Filter report category"
+                aria-label={t("filterCategory")}
                 value={categoryFilter}
                 onChange={(event) => setCategoryFilter(event.target.value as "all" | ExpenseCategory)}
                 className="border-0 bg-transparent px-0 focus:ring-0"
               >
-                <option value="all">All categories</option>
+                <option value="all">{t("allCategories")}</option>
                 {expenseCategories.map((category) => (
                   <option key={category} value={category}>
-                    {category}
+                    {categoryLabel(category)}
                   </option>
                 ))}
               </Select>
@@ -141,23 +166,23 @@ export function MonthlyReport() {
       </Card>
 
       {!hasReportData ? (
-        <EmptyState title="No expenses found for this month." description="Start tracking your expenses to view monthly reports." />
+        <EmptyState title={t("emptyMonthTitle")} description={t("emptyMonthDescription")} />
       ) : null}
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
-        <SummaryCard icon={CircleDollarSign} label="Total Expenses" value={money(report.totalMonthlyExpenses)} />
-        <SummaryCard icon={ListChecks} label="Transactions" value={report.totalTransactions.toString()} />
-        <SummaryCard icon={ReceiptText} label="Average Daily" value={money(report.averageDailySpending)} />
-        <SummaryCard icon={Trophy} label="Top Category" value={report.highestSpendingCategory || "None"} />
-        <SummaryCard icon={CalendarDays} label="Highest Day" value={report.highestSpendingDay ? money(report.highestSpendingDay.amount) : "None"} />
-        <SummaryCard icon={TrendingUp} label="Vs Previous" value={comparison} />
+        <SummaryCard icon={CircleDollarSign} label={t("totalExpenses")} value={money(report.totalMonthlyExpenses)} />
+        <SummaryCard icon={ListChecks} label={t("transactions")} value={report.totalTransactions.toString()} />
+        <SummaryCard icon={ReceiptText} label={t("averageDaily")} value={money(report.averageDailySpending)} />
+        <SummaryCard icon={Trophy} label={t("topCategory")} value={report.highestSpendingCategory ? categoryLabel(report.highestSpendingCategory) : tCommon("none")} />
+        <SummaryCard icon={CalendarDays} label={t("highestDay")} value={report.highestSpendingDay ? money(report.highestSpendingDay.amount) : tCommon("none")} />
+        <SummaryCard icon={TrendingUp} label={t("vsPrevious")} value={comparison} />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1fr_0.9fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Expenses by Category</CardTitle>
-            <CardDescription>Grouped spending with percentage share.</CardDescription>
+            <CardTitle>{t("expensesByCategory")}</CardTitle>
+            <CardDescription>{t("expensesByCategoryDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {report.categoryTotals.length ? (
@@ -176,7 +201,12 @@ export function MonthlyReport() {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(value) => money(Number(value))}
+                        formatter={(value, name) => [
+                          money(Number(value)),
+                          typeof name === "string" && expenseCategories.includes(name as ExpenseCategory)
+                            ? categoryLabel(name as ExpenseCategory)
+                            : name,
+                        ]}
                         contentStyle={tooltipStyle}
                         labelStyle={tooltipLabelStyle}
                         itemStyle={{ color: "var(--foreground)" }}
@@ -186,13 +216,13 @@ export function MonthlyReport() {
                 </div>
                 <div className="space-y-3">
                   {report.categoryTotals.map((item) => (
-                    <CategoryRow key={item.category} item={item} index={report.categoryTotals.indexOf(item)} />
+                    <CategoryRow key={item.category} item={item} index={report.categoryTotals.indexOf(item)} categoryLabel={categoryLabel(item.category)} />
                   ))}
                 </div>
               </>
             ) : (
               <p className="rounded-lg border border-dashed border-sky-100 bg-white/70 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300">
-                No expenses found for this month.
+                {t("emptyMonthTitle")}
               </p>
             )}
           </CardContent>
@@ -200,19 +230,19 @@ export function MonthlyReport() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Biggest Expense</CardTitle>
-            <CardDescription>Largest expense recorded this month.</CardDescription>
+            <CardTitle>{t("biggestExpense")}</CardTitle>
+            <CardDescription>{t("biggestExpenseDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
             {report.biggestExpense ? (
               <div className="space-y-3 tabular-nums">
-                <DetailRow label="Amount" value={money(report.biggestExpense.amount)} />
-                <DetailRow label="Category" value={report.biggestExpense.category} />
-                <DetailRow label="Date" value={prettyDate(report.biggestExpense.date)} />
-                <DetailRow label="Description" value={report.biggestExpense.description || "No description"} />
+                <DetailRow label={t("amount")} value={money(report.biggestExpense.amount)} />
+                <DetailRow label={t("category")} value={categoryLabel(report.biggestExpense.category)} />
+                <DetailRow label={t("date")} value={prettyDate(report.biggestExpense.date, locale)} />
+                <DetailRow label={t("descriptionLabel")} value={report.biggestExpense.description || tCommon("none")} />
               </div>
             ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-300">No expenses found for this month.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-300">{t("emptyMonthTitle")}</p>
             )}
           </CardContent>
         </Card>
@@ -220,8 +250,8 @@ export function MonthlyReport() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Daily Spending</CardTitle>
-          <CardDescription>Bar chart of each day in {format(selectedMonth, "MMMM yyyy")}.</CardDescription>
+          <CardTitle>{t("dailySpending")}</CardTitle>
+          <CardDescription>{t("dailySpendingDescription", { month: monthLabel })}</CardDescription>
         </CardHeader>
         <CardContent>
           {report.totalMonthlyExpenses > 0 ? (
@@ -232,8 +262,13 @@ export function MonthlyReport() {
                   <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} tickFormatter={(value) => `RM${value}`} />
                   <Tooltip
-                    formatter={(value) => money(Number(value))}
-                    labelFormatter={(label) => `${label} ${format(selectedMonth, "MMM yyyy")}`}
+                    formatter={(value) => [money(Number(value)), t("amount")]}
+                    labelFormatter={(label) => {
+                      const day = Number(label);
+                      return Number.isFinite(day)
+                        ? format(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), day), "d MMM yyyy", { locale: dateLocale })
+                        : `${label} ${shortMonthLabel}`;
+                    }}
                     contentStyle={tooltipStyle}
                     labelStyle={tooltipLabelStyle}
                     itemStyle={{ color: "var(--foreground)" }}
@@ -244,26 +279,26 @@ export function MonthlyReport() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <ChartEmptyState title="No daily spending" description="Add expenses this month to show the daily spending chart." />
+            <ChartEmptyState title={t("noDailySpending")} description={t("noDailySpendingDescription")} />
           )}
         </CardContent>
       </Card>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <DebtSummaryCard title="I Owe" summary={report.debtSummary.iOwe} />
-        <DebtSummaryCard title="Owe Me" summary={report.debtSummary.oweMe} />
+        <DebtSummaryCard title={tDebts("iOwe")} summary={report.debtSummary.iOwe} labels={{ unpaid: t("unpaidAmount"), paid: t("paidAmount"), records: t("records") }} />
+        <DebtSummaryCard title={tDebts("oweMe")} summary={report.debtSummary.oweMe} labels={{ unpaid: t("unpaidAmount"), paid: t("paidAmount"), records: t("records") }} />
       </section>
 
       <Card>
         <CardHeader>
-          <CardTitle>Debt Status Chart</CardTitle>
-          <CardDescription>Paid and unpaid debt amounts for the selected month.</CardDescription>
+          <CardTitle>{t("debtStatusChart")}</CardTitle>
+          <CardDescription>{t("debtStatusChartDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {report.totalDebtRecords > 0 ? (
             <div className="report-chart h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={report.debtChartData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                <BarChart data={debtChartData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                   <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} tickFormatter={(value) => `RM${value}`} />
@@ -274,24 +309,24 @@ export function MonthlyReport() {
                     itemStyle={{ color: "var(--foreground)" }}
                     cursor={{ fill: "transparent" }}
                   />
-                  <Bar dataKey="unpaid" name="Unpaid" fill="var(--accent)" background={false} radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="paid" name="Paid" fill="var(--accent-hover)" fillOpacity={0.55} background={false} radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="unpaid" name={tDebts("unpaid")} fill="var(--accent)" background={false} radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="paid" name={tDebts("paid")} fill="var(--accent-hover)" fillOpacity={0.55} background={false} radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           ) : (
-            <ChartEmptyState title="No debt records" description="Add debts this month to show the debt status chart." />
+            <ChartEmptyState title={t("noDebtRecords")} description={t("noDebtRecordsDescription")} />
           )}
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Insight</CardTitle>
-          <CardDescription>Simple summary for the selected month.</CardDescription>
+          <CardTitle>{t("monthlyInsight")}</CardTitle>
+          <CardDescription>{t("monthlyInsightDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-1 rounded-b-lg bg-[var(--accent-soft)] p-4 text-sm leading-6 text-slate-700 dark:bg-[var(--accent-muted)] dark:text-slate-100">
-          {report.englishInsights.map((insight) => (
+          {insights.map((insight) => (
             <p key={insight}>{insight}</p>
           ))}
         </CardContent>
@@ -312,13 +347,13 @@ function SummaryCard({ icon: Icon, label, value }: { icon: typeof CircleDollarSi
   );
 }
 
-function CategoryRow({ item, index }: { item: CategoryTotal; index: number }) {
+function CategoryRow({ item, index, categoryLabel }: { item: CategoryTotal; index: number; categoryLabel: string }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-3 text-sm">
         <span className="flex items-center gap-2 font-medium">
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)]" style={{ opacity: categoryOpacity[index % categoryOpacity.length] }} />
-          {item.category}
+          {categoryLabel}
         </span>
         <span className="tabular-nums">{money(item.amount)} ({item.percentage.toFixed(0)}%)</span>
       </div>
@@ -373,9 +408,11 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 function DebtSummaryCard({
   title,
   summary,
+  labels,
 }: {
   title: string;
   summary: { unpaid: number; paid: number; records: number };
+  labels: { unpaid: string; paid: string; records: string };
 }) {
   return (
     <Card>
@@ -383,9 +420,9 @@ function DebtSummaryCard({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 tabular-nums">
-        <DetailRow label="Unpaid Amount" value={money(summary.unpaid)} />
-        <DetailRow label="Paid Amount" value={money(summary.paid)} />
-        <DetailRow label="Records" value={summary.records.toString()} />
+        <DetailRow label={labels.unpaid} value={money(summary.unpaid)} />
+        <DetailRow label={labels.paid} value={money(summary.paid)} />
+        <DetailRow label={labels.records} value={summary.records.toString()} />
       </CardContent>
     </Card>
   );
@@ -438,16 +475,6 @@ function buildMonthlyReport(expenses: Expense[], debts: Debt[], selectedMonth: D
     { name: "Owe Me", unpaid: debtSummary.oweMe.unpaid, paid: debtSummary.oweMe.paid },
   ];
 
-  const englishInsights = [
-    highestSpendingCategory
-      ? `You spent the most on ${highestSpendingCategory} this month.`
-      : "No spending category stands out this month.",
-    `Your average daily spending is ${money(averageDailySpending)}.`,
-    biggestExpense
-      ? `Your largest expense was ${money(biggestExpense.amount)} under ${biggestExpense.category}.`
-      : "No largest expense is available for this month.",
-  ];
-
   return {
     monthExpenses,
     monthDebts,
@@ -462,17 +489,16 @@ function buildMonthlyReport(expenses: Expense[], debts: Debt[], selectedMonth: D
     debtSummary,
     totalDebtRecords,
     debtChartData,
-    englishInsights,
   };
 }
 
-function getMonthComparison(current: number, previous: number) {
-  if (!current && !previous) return "No change";
-  if (!previous) return current ? "New spend" : "No change";
+function getMonthComparison(current: number, previous: number, t: ReturnType<typeof useTranslations<"Reports">>) {
+  if (!current && !previous) return t("noChange");
+  if (!previous) return current ? t("newSpend") : t("noChange");
 
   const difference = current - previous;
   const percentage = Math.abs((difference / previous) * 100);
-  if (!difference) return "No change";
+  if (!difference) return t("noChange");
   return `${difference > 0 ? "+" : "-"}${percentage.toFixed(0)}%`;
 }
 

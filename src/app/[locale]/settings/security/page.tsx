@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { passwordSchema } from "@/lib/schemas";
 import { useAuth } from "@/contexts/auth-context";
@@ -10,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldError, Label, PasswordInput } from "@/components/ui/form";
 
 export default function Page() {
+  const t = useTranslations("Settings");
+  const tAuth = useTranslations("Auth");
   const { changePassword } = useAuth();
   const form = useForm({
     resolver: zodResolver(passwordSchema),
@@ -20,37 +23,37 @@ export default function Page() {
     try {
       await changePassword(values.currentPassword, values.newPassword);
       form.reset();
-      toast.success("Password changed");
+      toast.success(t("passwordChanged"));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to change password");
+      toast.error(error instanceof Error ? error.message : t("unableChangePassword"));
     }
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Security</CardTitle>
-        <CardDescription>Confirm your current password before setting a new one.</CardDescription>
+        <CardTitle>{t("security")}</CardTitle>
+        <CardDescription>{t("securityInstructions")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
           <Field>
-            <Label htmlFor="currentPassword">Current password</Label>
-            <PasswordInput id="currentPassword" autoComplete="current-password" {...form.register("currentPassword")} />
+            <Label htmlFor="currentPassword">{t("currentPassword")}</Label>
+            <PasswordInput id="currentPassword" autoComplete="current-password" placeholder={tAuth("passwordPlaceholder")} {...form.register("currentPassword")} />
             <FieldError message={form.formState.errors.currentPassword?.message?.toString()} />
           </Field>
           <Field>
-            <Label htmlFor="newPassword">New password</Label>
-            <PasswordInput id="newPassword" autoComplete="new-password" {...form.register("newPassword")} />
+            <Label htmlFor="newPassword">{tAuth("newPassword")}</Label>
+            <PasswordInput id="newPassword" autoComplete="new-password" placeholder={tAuth("newPasswordPlaceholder")} {...form.register("newPassword")} />
             <FieldError message={form.formState.errors.newPassword?.message?.toString()} />
           </Field>
           <Field>
-            <Label htmlFor="confirmNewPassword">Confirm new password</Label>
-            <PasswordInput id="confirmNewPassword" autoComplete="new-password" {...form.register("confirmNewPassword")} />
+            <Label htmlFor="confirmNewPassword">{tAuth("confirmNewPassword")}</Label>
+            <PasswordInput id="confirmNewPassword" autoComplete="new-password" placeholder={tAuth("confirmNewPasswordPlaceholder")} {...form.register("confirmNewPassword")} />
             <FieldError message={form.formState.errors.confirmNewPassword?.message?.toString()} />
           </Field>
           <Button className="w-full" disabled={form.formState.isSubmitting}>
-            Change password
+            {t("changePassword")}
           </Button>
         </form>
       </CardContent>

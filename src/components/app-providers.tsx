@@ -1,13 +1,13 @@
 "use client";
 
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/auth-context";
 import { AccentProvider } from "@/contexts/accent-context";
+import { ThemeProvider } from "@/contexts/theme-context";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider>
       <AccentProvider>
         <AuthProvider>
           {children}

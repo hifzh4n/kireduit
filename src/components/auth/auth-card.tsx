@@ -1,17 +1,18 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { confirmPasswordReset } from "firebase/auth";
 import { type Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
 import { authSchema, forgotSchema, registerSchema, resetSchema } from "@/lib/schemas";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, Input, Label, PasswordInput } from "@/components/ui/form";
+import { Link, useRouter } from "@/i18n/navigation";
 
 type Mode = "login" | "register" | "forgot" | "reset";
 
@@ -19,6 +20,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, register, forgotPassword } = useAuth();
+  const t = useTranslations("Auth");
   const isLogin = mode === "login";
   const isRegister = mode === "register";
   const isForgot = mode === "forgot";
@@ -52,39 +54,39 @@ export function AuthCard({ mode }: { mode: Mode }) {
       }
       if (isLogin) {
         await login(values.email, values.password);
-        toast.success("Login successful");
+        toast.success(t("loginSuccess"));
         router.replace("/dashboard");
       } else if (isRegister) {
         await register(values.displayName, values.email, values.password);
-        toast.success("Registration successful");
+        toast.success(t("registerSuccess"));
         router.replace("/dashboard");
       } else if (isForgot) {
         await forgotPassword(values.email);
-        toast.success("Password reset email sent");
+        toast.success(t("resetEmailSent"));
         router.push("/login");
       } else {
         const oobCode = searchParams.get("oobCode");
         if (!oobCode) {
-          toast.error("Reset link is missing or invalid.");
+          toast.error(t("missingResetLink"));
           return;
         }
         await confirmPasswordReset(auth, oobCode, values.newPassword);
-        toast.success("Password reset successful");
+        toast.success(t("resetSuccess"));
         router.push("/login");
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Authentication failed");
+      toast.error(error instanceof Error ? error.message : t("authFailed"));
     }
   }
 
-  const title = isLogin ? "Welcome back" : isRegister ? "Create account" : isForgot ? "Reset your password" : "Set new password";
+  const title = isLogin ? t("welcomeBack") : isRegister ? t("createAccount") : isForgot ? t("resetPassword") : t("setNewPassword");
   const description = isLogin
-    ? "Log in to manage your expenses and debts."
+    ? t("loginDescription")
     : isRegister
-      ? "Start tracking your money in a few seconds."
+      ? t("registerDescription")
       : isForgot
-        ? "We will send a reset link to your email."
-        : "Enter your new password from the reset link.";
+        ? t("forgotDescription")
+        : t("resetDescription");
 
   return (
     <main className="min-h-screen bg-[#fdf7ff] px-4 py-6 dark:bg-[#101423] sm:px-6 lg:px-8">
@@ -99,13 +101,13 @@ export function AuthCard({ mode }: { mode: Mode }) {
             />
             <div>
               <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</p>
-              <p className="text-sm text-slate-600 dark:text-slate-300">Simple money tracking</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">{t("tagline")}</p>
             </div>
           </div>
           <div className="hidden max-w-sm space-y-2 md:block">
-            <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-100">Track money without clutter.</h1>
+            <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-100">{t("heroTitle")}</h1>
             <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-              Keep expenses, money you owe, and money owed to you in one clean personal dashboard.
+              {t("heroDescription")}
             </p>
           </div>
         </div>
@@ -119,33 +121,33 @@ export function AuthCard({ mode }: { mode: Mode }) {
             <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
               {isRegister ? (
                 <Field>
-                  <Label htmlFor="displayName">Display name</Label>
-                  <Input id="displayName" autoComplete="name" placeholder="Enter your display name" {...form.register("displayName")} />
+                  <Label htmlFor="displayName">{t("displayName")}</Label>
+                  <Input id="displayName" autoComplete="name" placeholder={t("displayNamePlaceholder")} {...form.register("displayName")} />
                   <FieldError message={form.formState.errors.displayName?.message?.toString()} />
                 </Field>
               ) : null}
 
               {!isReset ? (
                 <Field>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" autoComplete="email" placeholder="Enter your email" {...form.register("email")} />
+                  <Label htmlFor="email">{t("email")}</Label>
+                  <Input id="email" type="email" autoComplete="email" placeholder={t("emailPlaceholder")} {...form.register("email")} />
                   <FieldError message={form.formState.errors.email?.message?.toString()} />
                 </Field>
               ) : null}
 
               {!isForgot && !isReset ? (
                 <Field>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t("password")}</Label>
                   <PasswordInput
                     id="password"
                     autoComplete={isLogin ? "current-password" : "new-password"}
-                    placeholder={isLogin ? "Enter your password" : "Create a password"}
+                    placeholder={isLogin ? t("passwordPlaceholder") : t("createPasswordPlaceholder")}
                     {...form.register("password")}
                   />
                   <FieldError message={form.formState.errors.password?.message?.toString()} />
                   {isLogin ? (
                     <Link className="self-end text-sm font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/forgot-password">
-                      Forgot password?
+                      {t("forgotPassword")}
                     </Link>
                   ) : null}
                 </Field>
@@ -154,34 +156,34 @@ export function AuthCard({ mode }: { mode: Mode }) {
               {isReset ? (
                 <>
                   <Field>
-                    <Label htmlFor="newPassword">New password</Label>
-                    <PasswordInput id="newPassword" autoComplete="new-password" placeholder="Enter new password" {...form.register("newPassword")} />
+                    <Label htmlFor="newPassword">{t("newPassword")}</Label>
+                    <PasswordInput id="newPassword" autoComplete="new-password" placeholder={t("newPasswordPlaceholder")} {...form.register("newPassword")} />
                     <FieldError message={form.formState.errors.newPassword?.message?.toString()} />
                   </Field>
                   <Field>
-                    <Label htmlFor="confirmNewPassword">Confirm new password</Label>
-                    <PasswordInput id="confirmNewPassword" autoComplete="new-password" placeholder="Confirm new password" {...form.register("confirmNewPassword")} />
+                    <Label htmlFor="confirmNewPassword">{t("confirmNewPassword")}</Label>
+                    <PasswordInput id="confirmNewPassword" autoComplete="new-password" placeholder={t("confirmNewPasswordPlaceholder")} {...form.register("confirmNewPassword")} />
                     <FieldError message={form.formState.errors.confirmNewPassword?.message?.toString()} />
                   </Field>
                 </>
               ) : null}
 
               <Button className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Please wait..." : isLogin ? "Login" : isRegister ? "Register" : isForgot ? "Send reset link" : "Reset password"}
+                {form.formState.isSubmitting ? t("pleaseWait") : isLogin ? t("login") : isRegister ? t("register") : isForgot ? t("resetPassword") : t("resetPassword")}
               </Button>
             </form>
 
             <div className="mt-4 space-y-2 text-center text-sm text-slate-500 dark:text-slate-300">
               {isLogin ? (
                 <p>
-                  No account?{" "}
+                  {t("noAccount")}{" "}
                   <Link className="font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/register">
-                    Register
+                    {t("register")}
                   </Link>
                 </p>
               ) : (
                 <Link className="font-medium text-[var(--accent-text)] dark:text-[var(--accent)]" href="/login">
-                  Back to login
+                  {t("backToLogin")}
                 </Link>
               )}
             </div>

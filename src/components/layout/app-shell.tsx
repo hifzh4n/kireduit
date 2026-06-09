@@ -1,23 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, BarChart3, HandCoins, Home, Plus, ReceiptText, Settings, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { DataProvider } from "@/contexts/data-context";
 import { Protected } from "@/components/auth/auth-gate";
 import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 import { cn } from "@/lib/utils";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 const navBeforeAdd = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/expenses", label: "Expenses", icon: ReceiptText },
+  { href: "/dashboard", label: "dashboard", icon: Home },
+  { href: "/expenses", label: "expenses", icon: ReceiptText },
 ];
 
 const navAfterAdd = [
-  { href: "/debts", label: "Debts", icon: HandCoins },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/debts", label: "debts", icon: HandCoins },
+  { href: "/settings", label: "settings", icon: Settings },
 ];
 
 const rootRoutes = ["/dashboard", "/expenses", "/debts", "/settings"];
@@ -28,6 +28,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [addOpen, setAddOpen] = useState(false);
   const addMenuRef = useRef<HTMLDivElement>(null);
   const showBack = !rootRoutes.includes(pathname);
+  const tNav = useTranslations("Navigation");
+  const tCommon = useTranslations("Common");
+  const tExpenses = useTranslations("Expenses");
+  const tDebts = useTranslations("Debts");
 
   useEffect(() => {
     function closeOnOutsideClick(event: PointerEvent) {
@@ -65,7 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </span>
                 </Link>
               </div>
-              <Link href="/reports/monthly" aria-label="Monthly reports">
+              <Link href="/reports/monthly" aria-label={tNav("reports")}>
                 <BarChart3 className="h-5 w-5 shrink-0 text-[var(--accent-text)] dark:text-[var(--accent)]" />
               </Link>
             </div>
@@ -84,11 +88,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {showBack ? (
                     <button
                       type="button"
-                      onClick={() => router.back()}
+                      onClick={() => {
+                        if (pathname === "/settings/language") {
+                          router.push("/settings");
+                          return;
+                        }
+
+                        router.back();
+                      }}
                       className="mb-4 inline-flex h-10 items-center gap-2 rounded-md border border-sky-100 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Back
+                      {tCommon("back")}
                     </button>
                   ) : null}
                   {children}
@@ -118,7 +129,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-[var(--accent-border)] bg-[var(--accent)] px-4 text-sm font-semibold text-[var(--accent-ink)] shadow-xl shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)]"
                       >
                         <ReceiptText className="h-4 w-4" />
-                        Expense
+                        {tExpenses("add")}
                       </Link>
                     </motion.div>
                     <motion.div
@@ -133,7 +144,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         className="flex h-12 min-w-32 items-center justify-center gap-2 rounded-full border border-sky-100 bg-white/90 px-4 text-sm font-semibold text-slate-800 shadow-xl shadow-sky-100/40 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/30 dark:hover:bg-slate-800"
                       >
                         <HandCoins className="h-4 w-4 text-[var(--accent-text)] dark:text-[var(--accent)]" />
-                        Debt
+                        {tDebts("add")}
                       </Link>
                     </motion.div>
                   </motion.div>
@@ -141,12 +152,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </AnimatePresence>
               <nav className="relative grid h-16 w-full grid-cols-5 items-center rounded-2xl border border-sky-100 bg-white/90 px-2 shadow-lg shadow-sky-100/60 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/30">
                 {navBeforeAdd.map((item) => (
-                  <NavItem key={item.href} item={item} pathname={pathname} />
+                  <NavItem key={item.href} item={item} label={tNav(item.label)} pathname={pathname} />
                 ))}
                 <button
                   type="button"
                   onClick={() => setAddOpen((open) => !open)}
-                  aria-label="Add new record"
+                  aria-label={tNav("addRecord")}
                   aria-expanded={addOpen}
                   className={cn(
                     "relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[var(--accent)] text-[var(--accent-ink)] shadow-md shadow-[var(--accent-shadow)] hover:bg-[var(--accent-hover)] dark:border-slate-900",
@@ -156,7 +167,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {addOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
                 </button>
                 {navAfterAdd.map((item) => (
-                  <NavItem key={item.href} item={item} pathname={pathname} />
+                  <NavItem key={item.href} item={item} label={tNav(item.label)} pathname={pathname} />
                 ))}
               </nav>
             </div>
@@ -169,9 +180,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function NavItem({
   item,
+  label,
   pathname,
 }: {
   item: { href: string; label: string; icon: typeof Home };
+  label: string;
   pathname: string;
 }) {
   const Icon = item.icon;
@@ -180,7 +193,7 @@ function NavItem({
   return (
     <Link
       href={item.href}
-      aria-label={item.label}
+      aria-label={label}
       className={cn(
         "relative flex h-12 items-center justify-center overflow-hidden rounded-xl px-1 text-slate-400 transition hover:text-[var(--accent-text)] dark:text-slate-400 dark:hover:text-[var(--accent)]",
         active && "text-[var(--accent-text)] dark:text-[var(--accent)]",

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export function Label({ className, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) {
@@ -24,8 +25,10 @@ Input.displayName = "Input";
 
 export const DateInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, defaultValue, onChange, placeholder = "Select date", value, ...props }, ref) => {
+    const tCommon = useTranslations("Common");
     const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue?.toString() || "");
     const hasValue = value !== undefined ? Boolean(value) : Boolean(uncontrolledValue);
+    const displayPlaceholder = placeholder === "Select date" ? tCommon("selectDate") : placeholder;
 
     return (
       <div className="relative min-w-0">
@@ -49,7 +52,7 @@ export const DateInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttri
         />
         {!hasValue ? (
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-base text-slate-400 dark:text-slate-500 sm:text-sm">
-            {placeholder}
+            {displayPlaceholder}
           </span>
         ) : null}
       </div>
@@ -60,6 +63,7 @@ DateInput.displayName = "DateInput";
 
 export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => {
+    const tCommon = useTranslations("Common");
     const [visible, setVisible] = React.useState(false);
 
     return (
@@ -75,7 +79,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLA
         />
         <button
           type="button"
-          aria-label={visible ? "Hide password" : "Show password"}
+          aria-label={visible ? tCommon("hidePassword") : tCommon("showPassword")}
           onClick={() => setVisible((value) => !value)}
           className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 transition hover:text-[var(--accent-text)] dark:text-slate-400 dark:hover:text-[var(--accent)]"
         >

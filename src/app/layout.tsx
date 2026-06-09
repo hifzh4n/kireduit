@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AppProviders } from "@/components/app-providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -44,7 +43,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
-        <AppProviders>{children}</AppProviders>
+        {children}
       </body>
     </html>
   );

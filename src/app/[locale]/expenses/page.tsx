@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Plus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { ExpenseList } from "@/components/expenses/expense-list";
@@ -11,8 +11,12 @@ import { expenseCategories, type ExpenseCategory } from "@/lib/types";
 import { todayInput } from "@/lib/format";
 import { DataError } from "@/components/data-error";
 import { ListRowSkeleton } from "@/components/ui/list-row-skeleton";
+import { Link } from "@/i18n/navigation";
 
 export default function Page() {
+  const t = useTranslations("Expenses");
+  const tCategories = useTranslations("Categories");
+  const tCommon = useTranslations("Common");
   const { expenses, error, loading } = useData();
   const [category, setCategory] = useState<"all" | ExpenseCategory>("all");
   const [date, setDate] = useState("");
@@ -31,11 +35,11 @@ export default function Page() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Expenses</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-300">Track daily spending.</p>
+          <h1 className="text-2xl font-semibold">{t("title")}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-300">{t("description")}</p>
         </div>
         <Link href="/expenses/new">
-          <Button size="icon" aria-label="Add expense">
+          <Button size="icon" aria-label={t("addTitle")}>
             <Plus className="h-5 w-5" />
           </Button>
         </Link>
@@ -43,18 +47,18 @@ export default function Page() {
       <DataError message={error} />
       <div className="grid gap-3 rounded-lg border border-sky-100 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/90 sm:grid-cols-[1fr_1fr_auto]">
         <Field>
-          <Label htmlFor="categoryFilter">Category</Label>
+          <Label htmlFor="categoryFilter">{t("category")}</Label>
           <Select id="categoryFilter" value={category} onChange={(event) => setCategory(event.target.value as "all" | ExpenseCategory)}>
-            <option value="all">All categories</option>
+            <option value="all">{t("allCategories")}</option>
             {expenseCategories.map((item) => (
               <option key={item} value={item}>
-                {item}
+                {tCategories(item)}
               </option>
             ))}
           </Select>
         </Field>
         <Field>
-          <Label htmlFor="dateFilter">Date</Label>
+          <Label htmlFor="dateFilter">{t("date")}</Label>
           <DateInput id="dateFilter" max={todayInput()} value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
         {hasFilters ? (
@@ -68,7 +72,7 @@ export default function Page() {
             }}
           >
             <X className="h-4 w-4" />
-            Clear
+            {tCommon("clear")}
           </Button>
         ) : null}
       </div>

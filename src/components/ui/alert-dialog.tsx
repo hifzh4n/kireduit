@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Button } from "./button";
 
 export function ConfirmButton({
@@ -25,6 +26,8 @@ export function ConfirmButton({
 }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const tCommon = useTranslations("Common");
+  const tErrors = useTranslations("Errors");
 
   async function confirm() {
     setBusy(true);
@@ -32,7 +35,7 @@ export function ConfirmButton({
       await onConfirm();
       setOpen(false);
     } catch (error) {
-      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to complete action.");
+      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message, tErrors) : tErrors("unableAction"));
     } finally {
       setBusy(false);
     }
@@ -68,10 +71,10 @@ export function ConfirmButton({
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{description}</p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancel
+                {tCommon("cancel")}
               </Button>
               <Button type="button" variant={variant} onClick={confirm} disabled={busy}>
-                {busy ? "Working..." : actionLabel}
+                {busy ? tCommon("working") : actionLabel}
               </Button>
             </div>
             </motion.div>
@@ -84,10 +87,10 @@ export function ConfirmButton({
   );
 }
 
-function friendlyFirebaseMessage(message: string) {
+function friendlyFirebaseMessage(message: string, tErrors: ReturnType<typeof useTranslations<"Errors">>) {
   if (message.toLowerCase().includes("permission")) {
-    return "Missing Firestore permission. Deploy the latest Firestore rules and try again.";
+    return tErrors("permission");
   }
 
-  return message || "Unable to complete action.";
+  return message || tErrors("unableAction");
 }

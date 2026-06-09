@@ -1,5 +1,5 @@
-import { RootRedirect } from "@/components/auth/auth-gate";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <RootRedirect />;
+  redirect("/en");
 }

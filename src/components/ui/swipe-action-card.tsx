@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useRouter } from "@/i18n/navigation";
 
 const maxPull = 72;
 const threshold = 58;
@@ -24,6 +25,9 @@ export function SwipeActionCard({
   onDelete: () => Promise<void> | void;
 }) {
   const router = useRouter();
+  const t = useTranslations("SwipeActions");
+  const tCommon = useTranslations("Common");
+  const tErrors = useTranslations("Errors");
   const startX = useRef(0);
   const moved = useRef(false);
   const dragging = useRef(false);
@@ -85,7 +89,7 @@ export function SwipeActionCard({
     try {
       await onDelete();
     } catch (error) {
-      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to delete record.");
+      toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message, tErrors("permission"), t("unableDeleteRecord")) : t("unableDeleteRecord"));
     } finally {
       setBusy(false);
     }
@@ -114,7 +118,7 @@ export function SwipeActionCard({
       >
         <div className={cn("flex flex-col items-center gap-1 text-xs font-semibold transition-transform duration-150", activeAction === "edit" && "scale-110")}>
           <Pencil className="h-4 w-4" />
-          {activeAction === "edit" ? "Release" : "Edit"}
+          {activeAction === "edit" ? tCommon("release") : tCommon("edit")}
         </div>
       </div>
       <div
@@ -126,13 +130,13 @@ export function SwipeActionCard({
       >
         <div className={cn("flex flex-col items-center gap-1 text-xs font-semibold transition-transform duration-150", activeAction === "delete" && "scale-110")}>
           <Trash2 className="h-4 w-4" />
-          {activeAction === "delete" ? "Release" : "Delete"}
+          {activeAction === "delete" ? tCommon("release") : tCommon("delete")}
         </div>
       </div>
       <div
         role="link"
         tabIndex={0}
-        aria-label="Open details. Swipe right to edit or left to delete."
+        aria-label={t("openDetailsInstructions")}
         onClick={openDetail}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -159,7 +163,7 @@ export function SwipeActionCard({
           <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/70 backdrop-blur-[1px] dark:bg-slate-950/60">
             <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-lg dark:bg-slate-900 dark:text-slate-100">
               <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-text)] dark:text-[var(--accent)]" />
-              Loading
+              {tCommon("loading")}
             </div>
           </div>
         ) : null}
@@ -182,11 +186,11 @@ export function SwipeActionCard({
               exit={{ opacity: 0, y: 12, scale: 0.96 }}
               transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
             >
-              <h2 className="text-base font-semibold">Delete record?</h2>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">This record will be removed permanently.</p>
+              <h2 className="text-base font-semibold">{t("deleteRecordQuestion")}</h2>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{t("deleteRecordDescription")}</p>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" onClick={() => setConfirmOpen(false)}>
-                  Cancel
+                  {tCommon("cancel")}
                 </Button>
                 <Button
                   type="button"
@@ -197,7 +201,7 @@ export function SwipeActionCard({
                   }}
                   disabled={busy}
                 >
-                  {busy ? "Deleting..." : "Delete"}
+                  {busy ? tCommon("deleting") : tCommon("delete")}
                 </Button>
               </div>
             </motion.div>
@@ -210,10 +214,10 @@ export function SwipeActionCard({
   );
 }
 
-function friendlyFirebaseMessage(message: string) {
+function friendlyFirebaseMessage(message: string, permissionMessage: string, fallback: string) {
   if (message.toLowerCase().includes("permission")) {
-    return "Missing Firestore permission. Deploy the latest Firestore rules and try again.";
+    return permissionMessage;
   }
 
-  return message || "Unable to complete action.";
+  return message || fallback;
 }

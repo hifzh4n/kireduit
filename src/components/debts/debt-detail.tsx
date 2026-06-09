@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useData } from "@/contexts/data-context";
 import { money, prettyDate } from "@/lib/format";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmButton } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link, useRouter } from "@/i18n/navigation";
 
 export function DebtDetail({ debtId }: { debtId: string }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("Debts");
+  const tCommon = useTranslations("Common");
   const { debts, deleteDebt, markDebt, restoreDebt, loading } = useData();
   const debt = debts.find((item) => item.id === debtId);
 
@@ -27,7 +31,7 @@ export function DebtDetail({ debtId }: { debtId: string }) {
     );
   }
 
-  if (!debt) return <Card className="p-4">Debt not found.</Card>;
+  if (!debt) return <Card className="p-4">{t("notFound")}</Card>;
 
   const paid = debt.status === "paid";
 
@@ -35,66 +39,62 @@ export function DebtDetail({ debtId }: { debtId: string }) {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">{money(debt.amount)}</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-300">{debt.type === "i-owe" ? "I owe" : "Owe me"}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300">{debt.type === "i-owe" ? t("iOwe") : t("oweMe")}</p>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Debt details</CardTitle>
+          <CardTitle>{t("details")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-300">Person</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">{t("person")}</span>
             <span className="font-medium">{debt.personName}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-300">Status</span>
-            <Badge tone={paid ? "emerald" : "amber"}>{paid ? "Paid" : "Unpaid"}</Badge>
+            <span className="text-sm text-slate-500 dark:text-slate-300">{t("status")}</span>
+            <Badge tone={paid ? "emerald" : "amber"}>{paid ? t("paid") : t("unpaid")}</Badge>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-slate-300">Debt date</span>
-            <span>{debt.dueDate ? prettyDate(debt.dueDate) : "No debt date"}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-300">{t("debtDate")}</span>
+            <span>{debt.dueDate ? prettyDate(debt.dueDate, locale) : t("noDebtDate")}</span>
           </div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-300">Description</p>
-            <p className="mt-1">{debt.description || "No description"}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-300">{t("descriptionLabel")}</p>
+            <p className="mt-1">{debt.description || t("noDescription")}</p>
           </div>
         </CardContent>
       </Card>
       <div className="space-y-3">
         <ConfirmButton
-          title={paid ? "Mark debt as unpaid?" : "Mark debt as paid?"}
-          description={
-            paid
-              ? `This will move ${debt.personName}'s debt back to unpaid.`
-              : `Confirm that ${debt.personName}'s debt has been paid.`
-          }
-          actionLabel={paid ? "Mark unpaid" : "Mark paid"}
+          title={paid ? t("markUnpaidQuestion") : t("markPaidQuestion")}
+          description={paid ? t("markUnpaidDescription", { person: debt.personName }) : t("markPaidDescription", { person: debt.personName })}
+          actionLabel={paid ? t("markUnpaid") : t("markPaid")}
           variant="default"
           onConfirm={async () => {
             await markDebt(debt.id, paid ? "unpaid" : "paid");
-            toast.success(paid ? "Debt marked as unpaid" : "Debt marked as paid");
+            toast.success(paid ? t("markedUnpaid") : t("markedPaid"));
           }}
         >
           <Button className="w-full" variant={paid ? "secondary" : "default"}>
             {paid ? <RotateCcw className="h-4 w-4" /> : <Check className="h-4 w-4" />}
-            {paid ? "Mark unpaid" : "Mark paid"}
+            {paid ? t("markUnpaid") : t("markPaid")}
           </Button>
         </ConfirmButton>
         <div className="grid grid-cols-2 gap-2">
           <Link href={`/debts/${debt.id}/edit`}>
             <Button variant="outline" className="w-full">
               <Pencil className="h-4 w-4" />
-              Edit
+              {tCommon("edit")}
             </Button>
           </Link>
           <ConfirmButton
-            title="Delete debt?"
-            description="This debt record will move to recently deleted for 30 days."
+            title={t("deleteQuestion")}
+            description={t("deleteDescription")}
             onConfirm={async () => {
               await deleteDebt(debt.id);
-              toast.success("Debt moved to recently deleted", {
+              toast.success(t("deleted"), {
                 action: {
-                  label: "Undo",
+                  label: tCommon("undo"),
                   onClick: () => void restoreDebt(debt.id),
                 },
               });
@@ -103,7 +103,7 @@ export function DebtDetail({ debtId }: { debtId: string }) {
           >
             <Button variant="danger" className="w-full">
               <Trash2 className="h-4 w-4" />
-              Delete
+              {tCommon("delete")}
             </Button>
           </ConfirmButton>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { money, prettyDate } from "@/lib/format";
 import type { Expense } from "@/lib/types";
 import { Card } from "@/components/ui/card";
@@ -11,10 +12,11 @@ import { useData } from "@/contexts/data-context";
 import { ExpenseCategoryIcon } from "./expense-category-icon";
 
 export function ExpenseList({ expenses }: { expenses: Expense[] }) {
+  const t = useTranslations("Expenses");
   const { deleteExpense, restoreExpense } = useData();
 
   if (!expenses.length) {
-    return <EmptyState title="No expenses found" description="Add your first expense when you spend money." />;
+    return <EmptyState title={t("emptyTitle")} description={t("emptyDescription")} />;
   }
 
   return (
@@ -26,7 +28,7 @@ export function ExpenseList({ expenses }: { expenses: Expense[] }) {
           editHref={`/expenses/${expense.id}/edit`}
           onDelete={async () => {
             await deleteExpense(expense.id);
-            toast.success("Expense moved to recently deleted", {
+            toast.success(t("deleted"), {
               action: {
                 label: "Undo",
                 onClick: () => void restoreExpense(expense.id),

@@ -1,4 +1,5 @@
 import { format, isToday, parseISO, startOfMonth } from "date-fns";
+import { enUS, ms } from "date-fns/locale";
 import type { Expense } from "./types";
 
 export function money(value: number) {
@@ -8,9 +9,9 @@ export function money(value: number) {
   }).format(value || 0);
 }
 
-export function prettyDate(value?: string) {
+export function prettyDate(value?: string, locale = "en") {
   if (!value) return "No date";
-  return format(parseISO(value), "dd MMM yyyy");
+  return format(parseISO(value), "dd MMM yyyy", { locale: locale === "ms" ? ms : enUS });
 }
 
 export function todayInput() {

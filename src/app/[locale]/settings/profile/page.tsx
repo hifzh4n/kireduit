@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { profileSchema } from "@/lib/schemas";
 import { useAuth } from "@/contexts/auth-context";
@@ -10,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, Input, Label } from "@/components/ui/form";
 
 export default function Page() {
+  const t = useTranslations("Settings");
+  const tAuth = useTranslations("Auth");
   const { profile, user, updateDisplayName } = useAuth();
   const displayName = profile?.displayName || user?.displayName || "";
   const initials = displayName
@@ -25,7 +28,7 @@ export default function Page() {
 
   async function submit(values: { displayName: string }) {
     await updateDisplayName(values.displayName);
-    toast.success("Profile updated");
+    toast.success(t("profileUpdated"));
   }
 
   return (
@@ -36,20 +39,20 @@ export default function Page() {
             {initials}
           </div>
           <div>
-            <CardTitle>Profile</CardTitle>
-            <p className="text-sm text-slate-500 dark:text-slate-300">Only your display name can be changed.</p>
+            <CardTitle>{t("profile")}</CardTitle>
+            <p className="text-sm text-slate-500 dark:text-slate-300">{t("onlyDisplayNameChanged")}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
           <Field>
-            <Label htmlFor="displayName">Display name</Label>
+            <Label htmlFor="displayName">{tAuth("displayName")}</Label>
             <Input id="displayName" {...form.register("displayName")} />
             <FieldError message={form.formState.errors.displayName?.message?.toString()} />
           </Field>
           <Field>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{tAuth("email")}</Label>
             <Input
               id="email"
               value={profile?.email || user?.email || ""}
@@ -58,7 +61,7 @@ export default function Page() {
             />
           </Field>
           <Button className="w-full" disabled={form.formState.isSubmitting}>
-            Save profile
+            {t("saveProfile")}
           </Button>
         </form>
       </CardContent>

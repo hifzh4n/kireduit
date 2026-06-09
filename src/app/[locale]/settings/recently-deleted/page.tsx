@@ -1,6 +1,7 @@
 "use client";
 
 import { RotateCcw, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useData } from "@/contexts/data-context";
 import { money, prettyDate } from "@/lib/format";
@@ -14,6 +15,10 @@ import { EmptyState } from "@/components/empty-state";
 import { ListRowSkeleton } from "@/components/ui/list-row-skeleton";
 
 export default function Page() {
+  const t = useTranslations("Settings");
+  const tExpenses = useTranslations("Expenses");
+  const tDebts = useTranslations("Debts");
+  const tErrors = useTranslations("Errors");
   const {
     deletedDebts,
     deletedExpenses,
@@ -27,15 +32,15 @@ export default function Page() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">Recently Deleted</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-300">Deleted records stay here for 30 days before removal.</p>
+        <h1 className="text-2xl font-semibold">{t("recentlyDeletedTitle")}</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-300">{t("recentlyDeletedIntro")}</p>
       </div>
 
       {loading ? (
         <ListRowSkeleton rows={4} />
       ) : deletedExpenses.length || deletedDebts.length ? (
         <>
-          <DeletedSection title="Expenses" emptyText="No deleted expenses.">
+          <DeletedSection title={tExpenses("title")} emptyText={t("noDeletedExpenses")}>
             {deletedExpenses.map((expense) => (
               <DeletedExpenseRow
                 key={expense.id}
@@ -43,20 +48,20 @@ export default function Page() {
                 onRestore={async () => {
                   try {
                     await restoreExpense(expense.id);
-                    toast.success("Expense restored");
+                    toast.success(t("expenseRestored"));
                   } catch (error) {
-                    toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to restore expense.");
+                    toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message, tErrors("permission"), t("unableRestoreExpense")) : t("unableRestoreExpense"));
                   }
                 }}
                 onPermanentDelete={async () => {
                   await permanentlyDeleteExpense(expense.id);
-                  toast.success("Expense permanently deleted");
+                  toast.success(t("expensePermanentlyDeleted"));
                 }}
               />
             ))}
           </DeletedSection>
 
-          <DeletedSection title="Debts" emptyText="No deleted debts.">
+          <DeletedSection title={tDebts("title")} emptyText={t("noDeletedDebts")}>
             {deletedDebts.map((debt) => (
               <DeletedDebtRow
                 key={debt.id}
@@ -64,21 +69,21 @@ export default function Page() {
                 onRestore={async () => {
                   try {
                     await restoreDebt(debt.id);
-                    toast.success("Debt restored");
+                    toast.success(t("debtRestored"));
                   } catch (error) {
-                    toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message) : "Unable to restore debt.");
+                    toast.error(error instanceof Error ? friendlyFirebaseMessage(error.message, tErrors("permission"), t("unableRestoreDebt")) : t("unableRestoreDebt"));
                   }
                 }}
                 onPermanentDelete={async () => {
                   await permanentlyDeleteDebt(debt.id);
-                  toast.success("Debt permanently deleted");
+                  toast.success(t("debtPermanentlyDeleted"));
                 }}
               />
             ))}
           </DeletedSection>
         </>
       ) : (
-        <EmptyState title="Nothing recently deleted" description="Deleted expenses and debts will appear here for 30 days." />
+        <EmptyState title={t("nothingRecentlyDeleted")} description={t("deletedRecordsEmpty")} />
       )}
     </div>
   );
@@ -104,6 +109,7 @@ function DeletedExpenseRow({
   onPermanentDelete: () => Promise<void>;
   onRestore: () => Promise<void>;
 }) {
+  const t = useTranslations("Settings");
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -123,9 +129,9 @@ function DeletedExpenseRow({
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-300">
-          <span>{countdown(expense.expiresAt)}</span>
+          <span>{countdown(expense.expiresAt, t)}</span>
         </div>
-        <DeletedActions itemLabel="expense" onPermanentDelete={onPermanentDelete} onRestore={onRestore} />
+        <DeletedActions itemLabel={t("expenseItem")} onPermanentDelete={onPermanentDelete} onRestore={onRestore} />
       </CardContent>
     </Card>
   );
@@ -140,6 +146,8 @@ function DeletedDebtRow({
   onPermanentDelete: () => Promise<void>;
   onRestore: () => Promise<void>;
 }) {
+  const t = useTranslations("Settings");
+  const tDebts = useTranslations("Debts");
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -149,17 +157,17 @@ function DeletedDebtRow({
           </div>
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate">{debt.personName}</CardTitle>
-            <CardDescription>{debt.dueDate ? `Debt date ${prettyDate(debt.dueDate)}` : "No debt date"}</CardDescription>
+            <CardDescription>{debt.dueDate ? t("debtDateValue", { date: prettyDate(debt.dueDate) }) : tDebts("noDebtDate")}</CardDescription>
           </div>
           <p className="font-semibold tabular-nums">{money(debt.amount)}</p>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-300">
-          <Badge tone={debt.status === "paid" ? "emerald" : "amber"}>{debt.status === "paid" ? "Paid" : "Unpaid"}</Badge>
-          <span>{countdown(debt.expiresAt)}</span>
+          <Badge tone={debt.status === "paid" ? "emerald" : "amber"}>{debt.status === "paid" ? tDebts("paid") : tDebts("unpaid")}</Badge>
+          <span>{countdown(debt.expiresAt, t)}</span>
         </div>
-        <DeletedActions itemLabel="debt" onPermanentDelete={onPermanentDelete} onRestore={onRestore} />
+        <DeletedActions itemLabel={t("debtItem")} onPermanentDelete={onPermanentDelete} onRestore={onRestore} />
       </CardContent>
     </Card>
   );
@@ -174,41 +182,43 @@ function DeletedActions({
   onPermanentDelete: () => Promise<void>;
   onRestore: () => Promise<void>;
 }) {
+  const t = useTranslations("Settings");
+  const tCommon = useTranslations("Common");
   return (
     <div className="grid grid-cols-2 gap-2">
       <Button type="button" variant="outline" className="w-full" onClick={onRestore}>
         <RotateCcw className="h-4 w-4" />
-        Restore
+        {tCommon("restore")}
       </Button>
       <ConfirmButton
-        title={`Delete ${itemLabel} permanently?`}
-        description="This cannot be undone."
-        actionLabel="Delete"
+        title={t("deleteItemPermanently", { item: itemLabel })}
+        description={t("cannotBeUndone")}
+        actionLabel={tCommon("delete")}
         onConfirm={onPermanentDelete}
       >
         <Button type="button" variant="danger" className="w-full">
           <Trash2 className="h-4 w-4" />
-          Delete
+          {tCommon("delete")}
         </Button>
       </ConfirmButton>
     </div>
   );
 }
 
-function countdown(expiresAt: number) {
+function countdown(expiresAt: number, t: ReturnType<typeof useTranslations<"Settings">>) {
   const remaining = Math.max(0, expiresAt - Date.now());
   const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
   const hours = Math.ceil((remaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
 
-  if (days > 0) return `Deletes in ${days}d ${hours}h`;
-  if (hours > 0) return `Deletes in ${hours}h`;
-  return "Deletes soon";
+  if (days > 0) return t("deletedInDaysHours", { days, hours });
+  if (hours > 0) return t("deletedInHours", { hours });
+  return t("deletesSoon");
 }
 
-function friendlyFirebaseMessage(message: string) {
+function friendlyFirebaseMessage(message: string, permissionMessage: string, fallback: string) {
   if (message.toLowerCase().includes("permission")) {
-    return "Missing Firestore permission. Deploy the latest Firestore rules and try again.";
+    return permissionMessage;
   }
 
-  return message || "Unable to complete action.";
+  return message || fallback;
 }

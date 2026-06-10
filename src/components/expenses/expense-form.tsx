@@ -1,6 +1,6 @@
 "use client";
 
-import { type Resolver, useForm } from "react-hook-form";
+import { type Resolver, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -10,7 +10,8 @@ import { todayInput } from "@/lib/format";
 import { useData } from "@/contexts/data-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DateInput, Field, FieldError, Input, Label, Select, Textarea } from "@/components/ui/form";
+import { DateInput, Field, FieldError, Label, Select, Textarea } from "@/components/ui/form";
+import { CurrencyInput } from "@/components/ui/currency-input";
 import { useRouter } from "@/i18n/navigation";
 
 type Values = {
@@ -67,7 +68,19 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
         <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
           <Field>
             <Label htmlFor="amount">{t("amount")}</Label>
-            <Input id="amount" type="number" step="0.01" inputMode="decimal" placeholder="0.00" {...form.register("amount")} />
+            <Controller
+              name="amount"
+              control={form.control}
+              render={({ field }) => (
+                <CurrencyInput
+                  id="amount"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                />
+              )}
+            />
             <FieldError message={form.formState.errors.amount?.message} />
           </Field>
           <Field>

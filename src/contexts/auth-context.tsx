@@ -30,6 +30,7 @@ type AuthContextValue = {
   updateDisplayName: (displayName: string) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   removeAccount: (password: string) => Promise<void>;
+  updateFavoriteContacts: (contacts: string[]) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -48,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const fallbackProfile = {
       displayName: nextUser.displayName || "KireDuit User",
       email: nextUser.email || "",
+      favoriteContacts: [],
     };
 
     const ref = doc(db, "users", nextUser.uid);
@@ -138,6 +140,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         batch.delete(doc(db, "users", userId));
         await batch.commit();
         await deleteUser(auth.currentUser);
+      },
+      async updateFavoriteContacts(contacts) {
+        if (!auth.currentUser) return;
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          favoriteContacts: contacts,
+          updatedAt: serverTimestamp(),
+        });
+        await loadProfile(auth.currentUser);
       },
     }),
     [loading, profile, user],

@@ -44,6 +44,14 @@
     "recentlyDeletedDescription": "Restore or permanently delete records",
     "account": "Account",
     "accountDescription": "Logout or delete account",
+    "contacts": "Contacts",
+    "contactsDescription": "Manage favorite contacts",
+    "favoriteContacts": "Favorite Contacts",
+    "addContact": "Add contact",
+    "contactName": "Contact name",
+    "noContacts": "No favorite contacts",
+    "contactAdded": "Contact added",
+    "contactRemoved": "Contact removed",
     "onlyDisplayNameChanged": "Only your display name can be changed.",
     "saveProfile": "Save profile",
     "profileUpdated": "Profile updated",
@@ -197,7 +205,10 @@
     "markPaidDescription": "Confirm that {person}'s debt has been paid.",
     "markUnpaidDescription": "This will move {person}'s debt back to unpaid.",
     "markedPaid": "Debt marked as paid",
-    "markedUnpaid": "Debt marked as unpaid"
+    "markedUnpaid": "Debt marked as unpaid",
+    "addToFavorites": "Add to favorites",
+    "alreadyFavorite": "Already in favorites",
+    "addedToFavorites": "{person} added to favorites"
   },
   "Reports": {
     "title": "Monthly Report",

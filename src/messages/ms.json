@@ -44,6 +44,14 @@
     "recentlyDeletedDescription": "Pulihkan atau padam rekod kekal",
     "account": "Akaun",
     "accountDescription": "Log keluar atau padam akaun",
+    "contacts": "Kenalan",
+    "contactsDescription": "Urus kenalan kegemaran",
+    "favoriteContacts": "Kenalan Kegemaran",
+    "addContact": "Tambah kenalan",
+    "contactName": "Nama kenalan",
+    "noContacts": "Tiada kenalan kegemaran",
+    "contactAdded": "Kenalan ditambah",
+    "contactRemoved": "Kenalan dibuang",
     "onlyDisplayNameChanged": "Hanya nama paparan anda boleh ditukar.",
     "saveProfile": "Simpan profil",
     "profileUpdated": "Profil dikemaskini",
@@ -197,7 +205,10 @@
     "markPaidDescription": "Sahkan hutang {person} telah dibayar.",
     "markUnpaidDescription": "Ini akan menukar hutang {person} kembali kepada belum dibayar.",
     "markedPaid": "Hutang ditanda sebagai dibayar",
-    "markedUnpaid": "Hutang ditanda sebagai belum dibayar"
+    "markedUnpaid": "Hutang ditanda sebagai belum dibayar",
+    "addToFavorites": "Tambah ke kegemaran",
+    "alreadyFavorite": "Sudah dalam kegemaran",
+    "addedToFavorites": "{person} ditambah ke kegemaran"
   },
   "Reports": {
     "title": "Laporan Bulanan",

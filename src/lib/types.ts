@@ -18,6 +18,7 @@ export type DebtStatus = "paid" | "unpaid";
 export type UserProfile = {
   displayName: string;
   email: string;
+  favoriteContacts?: string[];
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 };

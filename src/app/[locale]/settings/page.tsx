@@ -1,12 +1,13 @@
 "use client";
 
-import { History, Languages, Lock, Moon, User, UserX } from "lucide-react";
+import { History, Languages, Lock, Moon, User, UserX, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 
 const items = [
   { href: "/settings/profile", label: "profile", description: "profileDescription", icon: User },
+  { href: "/settings/contacts", label: "contacts", description: "contactsDescription", icon: Users },
   { href: "/settings/security", label: "security", description: "securityDescription", icon: Lock },
   { href: "/settings/appearance", label: "appearance", description: "appearanceDescription", icon: Moon },
   { href: "/settings/language", label: "language", description: "languageDescription", icon: Languages },

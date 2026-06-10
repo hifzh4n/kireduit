@@ -1,9 +1,10 @@
 "use client";
 
 import { toast } from "sonner";
-import { Check, Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { Check, Pencil, RotateCcw, Star, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { useAuth } from "@/contexts/auth-context";
 import { useData } from "@/contexts/data-context";
 import { money, prettyDate } from "@/lib/format";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ export function DebtDetail({ debtId }: { debtId: string }) {
   const locale = useLocale();
   const t = useTranslations("Debts");
   const tCommon = useTranslations("Common");
+  const { profile, updateFavoriteContacts } = useAuth();
   const { debts, deleteDebt, markDebt, restoreDebt, loading } = useData();
   const debt = debts.find((item) => item.id === debtId);
 
@@ -34,6 +36,14 @@ export function DebtDetail({ debtId }: { debtId: string }) {
   if (!debt) return <Card className="p-4">{t("notFound")}</Card>;
 
   const paid = debt.status === "paid";
+  const favoriteContacts = profile?.favoriteContacts || [];
+  const isFavorite = favoriteContacts.includes(debt.personName);
+
+  async function handleAddToFavorites() {
+    if (isFavorite || !debt) return;
+    await updateFavoriteContacts([...favoriteContacts, debt.personName]);
+    toast.success(t("addedToFavorites", { person: debt.personName }));
+  }
 
   return (
     <div className="space-y-4">
@@ -48,7 +58,23 @@ export function DebtDetail({ debtId }: { debtId: string }) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-500 dark:text-slate-300">{t("person")}</span>
-            <span className="font-medium">{debt.personName}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{debt.personName}</span>
+              {isFavorite ? (
+                <span className="flex items-center gap-1 text-xs text-amber-500">
+                  <Star className="h-3 w-3 fill-current" />
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleAddToFavorites}
+                  title={t("addToFavorites")}
+                  className="text-slate-300 hover:text-amber-400 transition-colors dark:text-slate-600 dark:hover:text-amber-400"
+                >
+                  <Star className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-500 dark:text-slate-300">{t("status")}</span>
@@ -64,6 +90,12 @@ export function DebtDetail({ debtId }: { debtId: string }) {
           </div>
         </CardContent>
       </Card>
+      {isFavorite && (
+        <p className="text-center text-xs text-amber-500 flex items-center justify-center gap-1">
+          <Star className="h-3 w-3 fill-current" />
+          {t("alreadyFavorite")}
+        </p>
+      )}
       <div className="space-y-3">
         <ConfirmButton
           title={paid ? t("markUnpaidQuestion") : t("markPaidQuestion")}

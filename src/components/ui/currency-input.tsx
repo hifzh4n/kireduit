@@ -29,6 +29,32 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputPro
       return str;
     });
 
+    const localRef = React.useRef<HTMLInputElement | null>(null);
+
+    // Merge forwarded ref and local ref
+    const setRefs = React.useCallback(
+      (node: HTMLInputElement | null) => {
+        localRef.current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
+    );
+
+    const moveCursorToEnd = React.useCallback(() => {
+      const el = localRef.current;
+      if (el) {
+        // Queue the selection change to ensure the browser has finished updating the input value
+        requestAnimationFrame(() => {
+          const len = el.value.length;
+          el.setSelectionRange(len, len);
+        });
+      }
+    }, []);
+
     // When the parent resets the form value, sync back
     React.useEffect(() => {
       if (value === "" || value === undefined || value === 0) {
@@ -37,8 +63,6 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputPro
         const str = Math.round(Number(value) * 100).toString();
         setDigits(str);
       }
-    // Only run when `value` changes from the outside (form reset)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
 
     const displayValue = React.useMemo(() => {
@@ -50,44 +74,52 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputPro
       return `${wholeFormatted}.${String(cents).padStart(2, "0")}`;
     }, [digits]);
 
-    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-      if (e.key === "Backspace") {
-        e.preventDefault();
-        const next = digits.slice(0, -1);
-        setDigits(next);
-        const numValue = next ? parseInt(next, 10) / 100 : "";
-        onChange?.(numValue);
-        return;
+    // Keep cursor at the end when displayValue updates and the element is focused
+    React.useEffect(() => {
+      if (document.activeElement === localRef.current) {
+        moveCursorToEnd();
       }
+    }, [displayValue, moveCursorToEnd]);
 
-      if (e.key === "Delete") {
-        e.preventDefault();
-        setDigits("");
-        onChange?.("");
-        return;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value;
+      const cleanDigits = inputValue.replace(/\D/g, "");
+      
+      // Limit to 13 digits to prevent overflow
+      const nextDigits = cleanDigits.slice(0, 13);
+      
+      let finalDigits = nextDigits;
+      if (finalDigits) {
+        const parsed = parseInt(finalDigits, 10);
+        finalDigits = parsed === 0 ? "" : parsed.toString();
       }
-
-      if (/^\d$/.test(e.key)) {
-        e.preventDefault();
-        // Max 13 digits total to prevent overflow
-        if (digits.length >= 13) return;
-        const next = digits + e.key;
-        setDigits(next);
-        const numValue = parseInt(next, 10) / 100;
-        onChange?.(numValue);
-      }
-    }
+      
+      setDigits(finalDigits);
+      const numValue = finalDigits ? parseInt(finalDigits, 10) / 100 : "";
+      onChange?.(numValue);
+    };
 
     return (
       <div className="relative">
         <input
-          ref={ref}
+          ref={setRefs}
           id={id}
           name={name}
           type="text"
           inputMode="numeric"
-          readOnly
-          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          onFocus={(e) => {
+            moveCursorToEnd();
+            rest.onFocus?.(e);
+          }}
+          onClick={(e) => {
+            moveCursorToEnd();
+            rest.onClick?.(e);
+          }}
+          onKeyUp={(e) => {
+            moveCursorToEnd();
+            rest.onKeyUp?.(e);
+          }}
           onBlur={onBlur}
           value={displayValue}
           placeholder={placeholder}

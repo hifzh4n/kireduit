@@ -2,10 +2,11 @@
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "rich-click-button relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-md px-4 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
+  "relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-md px-4 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -30,27 +31,25 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+    VariantProps<typeof buttonVariants> {
+  loading?: boolean;
+}
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, onClick, variant, size, ...props }, ref) => {
-    const [spinning, setSpinning] = React.useState(false);
-
+  ({ children, className, disabled, loading = false, variant, size, ...props }, ref) => {
     return (
       <button
         className={cn(buttonVariants({ variant, size }), className)}
-        data-spinning={spinning ? "true" : undefined}
+        aria-busy={loading ? "true" : undefined}
+        disabled={disabled || loading}
         ref={ref}
-        onClick={(event) => {
-          if (!props.disabled) {
-            setSpinning(false);
-            window.requestAnimationFrame(() => setSpinning(true));
-            window.setTimeout(() => setSpinning(false), 950);
-          }
-          onClick?.(event);
-        }}
         {...props}
-      />
+      >
+        <span className={cn("inline-flex items-center justify-center gap-2 transition-opacity", loading && "opacity-0")}>
+          {children}
+        </span>
+        {loading ? <Loader2 className="absolute h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+      </button>
     );
   },
 );

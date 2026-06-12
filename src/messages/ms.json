@@ -52,6 +52,7 @@
     "noContacts": "Tiada kenalan kegemaran",
     "contactAdded": "Kenalan ditambah",
     "contactRemoved": "Kenalan dibuang",
+    "contactAlreadyExists": "Kenalan sudah wujud",
     "onlyDisplayNameChanged": "Hanya nama paparan anda boleh ditukar.",
     "saveProfile": "Simpan profil",
     "profileUpdated": "Profil dikemaskini",

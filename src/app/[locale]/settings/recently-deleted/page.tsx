@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { RotateCcw, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -184,9 +185,20 @@ function DeletedActions({
 }) {
   const t = useTranslations("Settings");
   const tCommon = useTranslations("Common");
+  const [restoring, setRestoring] = useState(false);
+
+  async function restore() {
+    setRestoring(true);
+    try {
+      await onRestore();
+    } finally {
+      setRestoring(false);
+    }
+  }
+
   return (
     <div className="grid grid-cols-2 gap-2">
-      <Button type="button" variant="outline" className="w-full" onClick={onRestore}>
+      <Button type="button" variant="outline" className="w-full" onClick={restore} loading={restoring}>
         <RotateCcw className="h-4 w-4" />
         {tCommon("restore")}
       </Button>

@@ -52,7 +52,7 @@ export default function Page() {
             <PasswordInput id="confirmNewPassword" autoComplete="new-password" placeholder={tAuth("confirmNewPasswordPlaceholder")} {...form.register("confirmNewPassword")} />
             <FieldError message={form.formState.errors.confirmNewPassword?.message?.toString()} />
           </Field>
-          <Button className="w-full" disabled={form.formState.isSubmitting}>
+          <Button className="w-full" disabled={form.formState.isSubmitting} loading={form.formState.isSubmitting}>
             {t("changePassword")}
           </Button>
         </form>

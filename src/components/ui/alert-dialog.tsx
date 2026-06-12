@@ -73,7 +73,7 @@ export function ConfirmButton({
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 {tCommon("cancel")}
               </Button>
-              <Button type="button" variant={variant} onClick={confirm} disabled={busy}>
+              <Button type="button" variant={variant} onClick={confirm} disabled={busy} loading={busy}>
                 {busy ? tCommon("working") : actionLabel}
               </Button>
             </div>

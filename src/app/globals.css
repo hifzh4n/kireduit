@@ -149,33 +149,6 @@ input[type="date"] {
   cursor: pointer;
 }
 
-.rich-click-button::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background: conic-gradient(from 0deg, transparent, rgb(255 255 255 / 0.75), transparent 38%) border-box;
-  -webkit-mask:
-    linear-gradient(#000 0 0) padding-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.rich-click-button[data-spinning="true"]::after {
-  animation: button-spin 1200ms linear;
-  opacity: 1;
-}
-
-@keyframes button-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .report-chart {
   color: var(--chart-text);
 }

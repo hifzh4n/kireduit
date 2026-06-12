@@ -103,7 +103,7 @@ export function ExpenseForm({ expense }: { expense?: Expense }) {
             <Textarea id="description" placeholder={t("optionalNote")} {...form.register("description")} />
             <FieldError message={form.formState.errors.description?.message} />
           </Field>
-          <Button className="w-full" disabled={form.formState.isSubmitting}>
+          <Button className="w-full" disabled={form.formState.isSubmitting} loading={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? `${tCommon("save")}...` : t("save")}
           </Button>
         </form>

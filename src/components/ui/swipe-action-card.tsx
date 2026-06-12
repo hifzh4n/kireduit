@@ -200,6 +200,7 @@ export function SwipeActionCard({
                     setConfirmOpen(false);
                   }}
                   disabled={busy}
+                  loading={busy}
                 >
                   {busy ? tCommon("deleting") : tCommon("delete")}
                 </Button>

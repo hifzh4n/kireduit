@@ -60,7 +60,7 @@ export default function Page() {
               className="cursor-not-allowed bg-sky-100 text-slate-500 dark:bg-slate-900 dark:text-slate-400"
             />
           </Field>
-          <Button className="w-full" disabled={form.formState.isSubmitting}>
+          <Button className="w-full" disabled={form.formState.isSubmitting} loading={form.formState.isSubmitting}>
             {t("saveProfile")}
           </Button>
         </form>

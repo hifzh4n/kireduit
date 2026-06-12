@@ -12,11 +12,13 @@ import { Input } from "@/components/ui/form";
 export default function Page() {
   const t = useTranslations("Settings");
   const tCommon = useTranslations("Common");
+  const tErrors = useTranslations("Errors");
   const { profile, updateFavoriteContacts } = useAuth();
   const [newContact, setNewContact] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [busyContact, setBusyContact] = useState<string | null>(null);
 
   const contacts = profile?.favoriteContacts || [];
+  const isAdding = busyContact === "__add__";
 
   async function addContact(e: React.FormEvent) {
     e.preventDefault();
@@ -24,31 +26,31 @@ export default function Page() {
     
     const name = newContact.trim();
     if (contacts.includes(name)) {
-      setNewContact("");
+      toast.error(t("contactAlreadyExists"));
       return;
     }
 
-    setIsSubmitting(true);
+    setBusyContact("__add__");
     try {
       await updateFavoriteContacts([...contacts, name]);
       toast.success(t("contactAdded"));
       setNewContact("");
-    } catch (error) {
-      toast.error(tCommon("tryAgain"));
+    } catch {
+      toast.error(tErrors("tryAgain"));
     } finally {
-      setIsSubmitting(false);
+      setBusyContact(null);
     }
   }
 
   async function removeContact(name: string) {
-    setIsSubmitting(true);
+    setBusyContact(name);
     try {
       await updateFavoriteContacts(contacts.filter(c => c !== name));
       toast.success(t("contactRemoved"));
-    } catch (error) {
-      toast.error(tCommon("tryAgain"));
+    } catch {
+      toast.error(tErrors("tryAgain"));
     } finally {
-      setIsSubmitting(false);
+      setBusyContact(null);
     }
   }
 
@@ -66,7 +68,7 @@ export default function Page() {
             placeholder={t("contactName")} 
             className="flex-1"
           />
-          <Button type="submit" disabled={isSubmitting || !newContact.trim()}>
+          <Button type="submit" disabled={Boolean(busyContact) || !newContact.trim()} loading={isAdding}>
             {t("addContact")}
           </Button>
         </form>
@@ -82,7 +84,8 @@ export default function Page() {
                   variant="ghost" 
                   size="icon" 
                   onClick={() => removeContact(contact)}
-                  disabled={isSubmitting}
+                  disabled={Boolean(busyContact)}
+                  loading={busyContact === contact}
                   className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
                   aria-label={tCommon("delete")}
                 >

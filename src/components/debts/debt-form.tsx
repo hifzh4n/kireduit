@@ -37,7 +37,7 @@ export function DebtForm({ debt }: { debt?: Debt }) {
   const [showFavPicker, setShowFavPicker] = React.useState(false);
   const favPickerRef = React.useRef<HTMLDivElement>(null);
 
-  const favoriteContacts = profile?.favoriteContacts || [];
+  const favoriteContacts = React.useMemo(() => profile?.favoriteContacts ?? [], [profile?.favoriteContacts]);
 
   // Only history names (not favorites) for autocomplete
   const historySuggestions = React.useMemo(() => {
@@ -202,7 +202,7 @@ export function DebtForm({ debt }: { debt?: Debt }) {
             <Textarea id="description" placeholder={t("optionalNote")} {...form.register("description")} />
             <FieldError message={form.formState.errors.description?.message} />
           </Field>
-          <Button className="w-full" disabled={form.formState.isSubmitting}>
+          <Button className="w-full" disabled={form.formState.isSubmitting} loading={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? `${tCommon("save")}...` : t("save")}
           </Button>
         </form>

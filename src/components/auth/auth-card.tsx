@@ -168,7 +168,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
                 </>
               ) : null}
 
-              <Button className="w-full" disabled={form.formState.isSubmitting}>
+              <Button className="w-full" disabled={form.formState.isSubmitting} loading={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? t("pleaseWait") : isLogin ? t("login") : isRegister ? t("register") : isForgot ? t("resetPassword") : t("resetPassword")}
               </Button>
             </form>

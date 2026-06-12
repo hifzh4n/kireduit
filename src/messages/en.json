@@ -52,6 +52,7 @@
     "noContacts": "No favorite contacts",
     "contactAdded": "Contact added",
     "contactRemoved": "Contact removed",
+    "contactAlreadyExists": "Contact already exists",
     "onlyDisplayNameChanged": "Only your display name can be changed.",
     "saveProfile": "Save profile",
     "profileUpdated": "Profile updated",

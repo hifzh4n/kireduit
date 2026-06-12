@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,8 +44,19 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
-        {children}
+      <body className="relative min-h-full overflow-x-hidden bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
+        <DotPattern
+          width={20}
+          height={20}
+          cx={1}
+          cy={1}
+          cr={1}
+          className={cn(
+            "fixed inset-0 z-0 h-screen w-screen fill-slate-900/[0.06] dark:fill-white/[0.06]",
+            "[mask-image:linear-gradient(to_bottom_right,white,white,transparent)]",
+          )}
+        />
+        <div className="relative z-10 min-h-screen">{children}</div>
       </body>
     </html>
   );

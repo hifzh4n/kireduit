@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <Protected>
       <DataProvider>
-        <div className="min-h-screen bg-[#fdf7ff] text-slate-800 dark:bg-[#101423] dark:text-slate-100">
+        <div className="min-h-screen text-slate-800 dark:text-slate-100">
           <header className="sticky top-0 z-20 border-b border-sky-100 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-[#101423]/95">
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
               <div className="flex min-w-0 items-center gap-2">

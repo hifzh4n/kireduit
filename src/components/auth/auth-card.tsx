@@ -89,7 +89,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
         : t("resetDescription");
 
   return (
-    <main className="min-h-screen bg-[#fdf7ff] px-4 py-6 dark:bg-[#101423] sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto flex min-h-[calc(100svh-3rem)] w-full max-w-5xl flex-col justify-center gap-5 md:grid md:grid-cols-[0.9fr_1fr] md:items-center md:gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2">

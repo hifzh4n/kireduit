@@ -3,6 +3,7 @@ import type { Timestamp } from "firebase/firestore";
 export const expenseCategories = [
   "Food",
   "Transport",
+  "Fuel",
   "Shopping",
   "Bills",
   "Health",

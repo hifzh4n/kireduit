@@ -9,11 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
 import { SwipeActionCard } from "@/components/ui/swipe-action-card";
 import { useData } from "@/contexts/data-context";
+import { useInfiniteList } from "@/hooks/use-infinite-list";
 import { ExpenseCategoryIcon } from "./expense-category-icon";
 
 export function ExpenseList({ expenses }: { expenses: Expense[] }) {
   const t = useTranslations("Expenses");
   const { deleteExpense, restoreExpense } = useData();
+  const { hasMore, sentinelRef, visibleItems } = useInfiniteList(expenses, (expense) => expense.id);
 
   if (!expenses.length) {
     return <EmptyState title={t("emptyTitle")} description={t("emptyDescription")} />;
@@ -21,7 +23,7 @@ export function ExpenseList({ expenses }: { expenses: Expense[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {expenses.map((expense) => (
+      {visibleItems.map((expense) => (
         <SwipeActionCard
           key={expense.id}
           detailHref={`/expenses/${expense.id}`}
@@ -51,6 +53,7 @@ export function ExpenseList({ expenses }: { expenses: Expense[] }) {
           </Card>
         </SwipeActionCard>
       ))}
+      {hasMore ? <div ref={sentinelRef} className="h-1" aria-hidden="true" /> : null}
     </div>
   );
 }

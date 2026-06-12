@@ -10,10 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
 import { SwipeActionCard } from "@/components/ui/swipe-action-card";
 import { useData } from "@/contexts/data-context";
+import { useInfiniteList } from "@/hooks/use-infinite-list";
 
 export function DebtList({ debts }: { debts: Debt[] }) {
   const t = useTranslations("Debts");
   const { deleteDebt, restoreDebt } = useData();
+  const { hasMore, sentinelRef, visibleItems } = useInfiniteList(debts, (debt) => debt.id);
 
   if (!debts.length) {
     return <EmptyState title={t("emptyTitle")} description={t("emptyDescription")} />;
@@ -21,7 +23,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {debts.map((debt) => (
+      {visibleItems.map((debt) => (
         <SwipeActionCard
           key={debt.id}
           detailHref={`/debts/${debt.id}`}
@@ -53,6 +55,7 @@ export function DebtList({ debts }: { debts: Debt[] }) {
           </Card>
         </SwipeActionCard>
       ))}
+      {hasMore ? <div ref={sentinelRef} className="h-1" aria-hidden="true" /> : null}
     </div>
   );
 }

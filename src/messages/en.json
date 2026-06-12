@@ -207,8 +207,9 @@
     "markedPaid": "Debt marked as paid",
     "markedUnpaid": "Debt marked as unpaid",
     "addToFavorites": "Add to favorites",
-    "alreadyFavorite": "Already in favorites",
-    "addedToFavorites": "{person} added to favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "addedToFavorites": "{person} added to favorites",
+    "removedFromFavorites": "{person} removed from favorites"
   },
   "Reports": {
     "title": "Monthly Report",

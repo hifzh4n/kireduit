@@ -39,8 +39,15 @@ export function DebtDetail({ debtId }: { debtId: string }) {
   const favoriteContacts = profile?.favoriteContacts || [];
   const isFavorite = favoriteContacts.includes(debt.personName);
 
-  async function handleAddToFavorites() {
-    if (isFavorite || !debt) return;
+  async function handleToggleFavorite() {
+    if (!debt) return;
+
+    if (isFavorite) {
+      await updateFavoriteContacts(favoriteContacts.filter((name) => name !== debt.personName));
+      toast.success(t("removedFromFavorites", { person: debt.personName }));
+      return;
+    }
+
     await updateFavoriteContacts([...favoriteContacts, debt.personName]);
     toast.success(t("addedToFavorites", { person: debt.personName }));
   }
@@ -60,20 +67,19 @@ export function DebtDetail({ debtId }: { debtId: string }) {
             <span className="text-sm text-slate-500 dark:text-slate-300">{t("person")}</span>
             <div className="flex items-center gap-2">
               <span className="font-medium">{debt.personName}</span>
-              {isFavorite ? (
-                <span className="flex items-center gap-1 text-xs text-amber-500">
-                  <Star className="h-3 w-3 fill-current" />
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleAddToFavorites}
-                  title={t("addToFavorites")}
-                  className="text-slate-300 hover:text-amber-400 transition-colors dark:text-slate-600 dark:hover:text-amber-400"
-                >
-                  <Star className="h-4 w-4" />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleToggleFavorite}
+                title={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
+                aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
+                className={
+                  isFavorite
+                    ? "text-amber-500 transition-colors hover:text-amber-400"
+                    : "text-slate-300 transition-colors hover:text-amber-400 dark:text-slate-600 dark:hover:text-amber-400"
+                }
+              >
+                <Star className={isFavorite ? "h-4 w-4 fill-current" : "h-4 w-4"} />
+              </button>
             </div>
           </div>
           <div className="flex items-center justify-between">
@@ -90,12 +96,6 @@ export function DebtDetail({ debtId }: { debtId: string }) {
           </div>
         </CardContent>
       </Card>
-      {isFavorite && (
-        <p className="text-center text-xs text-amber-500 flex items-center justify-center gap-1">
-          <Star className="h-3 w-3 fill-current" />
-          {t("alreadyFavorite")}
-        </p>
-      )}
       <div className="space-y-3">
         <ConfirmButton
           title={paid ? t("markUnpaidQuestion") : t("markPaidQuestion")}

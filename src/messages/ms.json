@@ -207,8 +207,9 @@
     "markedPaid": "Hutang ditanda sebagai dibayar",
     "markedUnpaid": "Hutang ditanda sebagai belum dibayar",
     "addToFavorites": "Tambah ke kegemaran",
-    "alreadyFavorite": "Sudah dalam kegemaran",
-    "addedToFavorites": "{person} ditambah ke kegemaran"
+    "removeFromFavorites": "Buang daripada kegemaran",
+    "addedToFavorites": "{person} ditambah ke kegemaran",
+    "removedFromFavorites": "{person} dibuang daripada kegemaran"
   },
   "Reports": {
     "title": "Laporan Bulanan",

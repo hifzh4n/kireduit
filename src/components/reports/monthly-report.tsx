@@ -41,7 +41,25 @@ type CategoryTotal = {
   percentage: number;
 };
 
-const categoryOpacity = [1, 0.82, 0.68, 0.54, 0.42, 0.32, 0.24, 0.18];
+const categoryColors: Record<ExpenseCategory, string> = {
+  Food: "#10b981",
+  Transport: "#3b82f6",
+  Fuel: "#f59e0b",
+  Shopping: "#ec4899",
+  Bills: "#8b5cf6",
+  Health: "#ef4444",
+  Entertainment: "#06b6d4",
+  Education: "#84cc16",
+  Other: "#64748b",
+};
+
+const categoryChartInitialDimension = { width: 320, height: 208 };
+const dailyChartInitialDimension = { width: 640, height: 288 };
+const debtChartInitialDimension = { width: 640, height: 256 };
+
+function getCategoryColor(category: ExpenseCategory) {
+  return categoryColors[category];
+}
 
 const tooltipStyle = {
   backgroundColor: "var(--chart-tooltip-bg)",
@@ -188,14 +206,13 @@ export function MonthlyReport() {
             {report.categoryTotals.length ? (
               <>
                 <div className="report-chart h-52">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={categoryChartInitialDimension}>
                     <PieChart>
                       <Pie data={report.categoryTotals} dataKey="amount" nameKey="category" innerRadius={48} outerRadius={78} paddingAngle={2}>
-                        {report.categoryTotals.map((entry, index) => (
+                        {report.categoryTotals.map((entry) => (
                           <Cell
                             key={entry.category}
-                            fill="var(--accent)"
-                            fillOpacity={categoryOpacity[index % categoryOpacity.length]}
+                            fill={getCategoryColor(entry.category)}
                             stroke="var(--chart-tooltip-bg)"
                           />
                         ))}
@@ -216,7 +233,7 @@ export function MonthlyReport() {
                 </div>
                 <div className="space-y-3">
                   {report.categoryTotals.map((item) => (
-                    <CategoryRow key={item.category} item={item} index={report.categoryTotals.indexOf(item)} categoryLabel={categoryLabel(item.category)} />
+                    <CategoryRow key={item.category} item={item} categoryLabel={categoryLabel(item.category)} />
                   ))}
                 </div>
               </>
@@ -256,7 +273,7 @@ export function MonthlyReport() {
         <CardContent>
           {report.totalMonthlyExpenses > 0 ? (
             <div className="report-chart h-72">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={dailyChartInitialDimension}>
                 <BarChart data={report.dailySpending} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                   <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} />
@@ -297,7 +314,7 @@ export function MonthlyReport() {
         <CardContent>
           {report.totalDebtRecords > 0 ? (
             <div className="report-chart h-64">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={debtChartInitialDimension}>
                 <BarChart data={debtChartData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
                   <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} stroke="var(--chart-text)" tick={{ fill: "var(--chart-text)" }} />
@@ -347,18 +364,20 @@ function SummaryCard({ icon: Icon, label, value }: { icon: typeof CircleDollarSi
   );
 }
 
-function CategoryRow({ item, index, categoryLabel }: { item: CategoryTotal; index: number; categoryLabel: string }) {
+function CategoryRow({ item, categoryLabel }: { item: CategoryTotal; categoryLabel: string }) {
+  const categoryColor = getCategoryColor(item.category);
+
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-3 text-sm">
         <span className="flex items-center gap-2 font-medium">
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)]" style={{ opacity: categoryOpacity[index % categoryOpacity.length] }} />
+          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: categoryColor }} />
           {categoryLabel}
         </span>
         <span className="tabular-nums">{money(item.amount)} ({item.percentage.toFixed(0)}%)</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-sky-100 dark:bg-slate-800">
-        <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: `${item.percentage}%` }} />
+        <div className="h-full rounded-full" style={{ width: `${item.percentage}%`, backgroundColor: categoryColor }} />
       </div>
     </div>
   );

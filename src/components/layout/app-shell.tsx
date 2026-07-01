@@ -55,12 +55,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
               <div className="flex min-w-0 items-center gap-2">
                 <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- Keep the logo as the original PNG without optimization. */}
-                  <img
-                    src="/kireduit-logo.png"
-                    alt="KireDuit logo"
-                    className="h-12 w-12 shrink-0 object-contain"
-                  />
+                  <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_14px_28px_rgb(15_23_42_/_0.12),0_5px_12px_rgb(16_185_129_/_0.09),inset_0_1px_0_rgb(255_255_255_/_0.7)] dark:bg-slate-950 dark:shadow-[0_14px_28px_rgb(0_0_0_/_0.30),0_5px_12px_rgb(16_185_129_/_0.10),inset_0_1px_0_rgb(255_255_255_/_0.1)]">
+                    <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255_/_0.9),transparent_42%,rgb(16_185_129_/_0.16))]" />
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Keep the logo as the original PNG without optimization. */}
+                    <img
+                      src="/logo.png"
+                      alt="KireDuit logo"
+                      className="relative h-full w-full object-contain"
+                    />
+                  </span>
                   <span className="flex min-w-0 flex-col leading-tight">
                     <span className="truncate text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</span>
                     <span className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)] dark:text-[var(--accent)]">

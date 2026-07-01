@@ -93,12 +93,15 @@ export function AuthCard({ mode }: { mode: Mode }) {
       <div className="mx-auto flex min-h-[calc(100svh-3rem)] w-full max-w-5xl flex-col justify-center gap-5 md:grid md:grid-cols-[0.9fr_1fr] md:items-center md:gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element -- Keep the logo as the original PNG without optimization. */}
-            <img
-              src="/kireduit-logo.png"
-              alt="KireDuit logo"
-              className="h-16 w-16 shrink-0 object-contain"
-            />
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[1rem] bg-white shadow-[0_18px_36px_rgb(15_23_42_/_0.14),0_6px_14px_rgb(16_185_129_/_0.10),inset_0_1px_0_rgb(255_255_255_/_0.7)] dark:bg-slate-950 dark:shadow-[0_18px_36px_rgb(0_0_0_/_0.32),0_6px_14px_rgb(16_185_129_/_0.12),inset_0_1px_0_rgb(255_255_255_/_0.1)]">
+              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255_/_0.9),transparent_42%,rgb(16_185_129_/_0.16))]" />
+              {/* eslint-disable-next-line @next/next/no-img-element -- Keep the logo as the original PNG without optimization. */}
+              <img
+                src="/logo.png"
+                alt="KireDuit logo"
+                className="relative h-full w-full object-contain"
+              />
+            </div>
             <div>
               <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">KireDuit</p>
               <p className="text-sm text-slate-600 dark:text-slate-300">{t("tagline")}</p>

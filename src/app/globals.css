@@ -90,13 +90,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-poppins);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   touch-action: manipulation;
@@ -151,6 +151,9 @@ input[type="date"] {
 
 .report-chart {
   color: var(--chart-text);
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
 }
 
 .report-chart text,

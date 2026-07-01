@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/kireduit-logo.png" alt="KireDuit Logo" width="96" height="96" />
+  <img src="public/logo.png" alt="KireDuit Logo" width="180" />
 </p>
 
 # KireDuit
